@@ -1,0 +1,7 @@
+all: paint conway
+
+paint: paint.cpp
+	g++ -c -o paint.o paint.cpp
+
+conway: conway.cpp
+	g++ -c -o conway.o conway.cpp
