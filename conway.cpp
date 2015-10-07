@@ -77,6 +77,29 @@ void print(int array[][52])
  	}
 }
 
+void grid(int size){
+	glColor3f(0.2,0.2,0.2);
+	glBegin(GL_LINES);
+
+		for (int i=0; i<=500; i+=10){
+			glVertex2f(i, 0);
+			glVertex2f(i, 500);
+			glVertex2f(0, i);
+			glVertex2f(500, i);
+		}
+
+
+	glEnd();
+}
+
+void display(void)
+{	
+	glClear(GL_COLOR_BUFFER_BIT);
+	grid(4);
+
+	glFlush();
+}
+
 int main(int argc, char **argv) {
 
 	int wholeNewWorld[52][52];
@@ -92,6 +115,15 @@ int main(int argc, char **argv) {
 	// life(wholeNewWorld);
 	// print(wholeNewWorld);
 	// life(wholeNewWorld);
+
+	glutInit(&argc, argv);
+	glutInitWindowSize(500, 500);
+	glutCreateWindow("conway's game of life");
+	//glutCallbacks();
+	//initMenu();
+	glutDisplayFunc(display);
+	gluOrtho2D(0, 500, 500, 0);
+	glutMainLoop();
 
 	return 0;
 }
