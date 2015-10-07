@@ -25,7 +25,7 @@ else
 endif
 
 #change the 't1' name to the name you want to call your application
-PROGRAM_NAME= painter
+PROGRAM_NAME= conway
 
 #run target to compile and build, and then launch the executable
 run: $(PROGRAM_NAME)
@@ -36,7 +36,7 @@ run: $(PROGRAM_NAME)
 #ie. boilerplateClass.o and yourFile.o
 #make will automatically know that the objectfile needs to be compiled
 #form a cpp source file and find it itself :)
-$(PROGRAM_NAME): paint.o
+$(PROGRAM_NAME): conway.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 clean:

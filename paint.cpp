@@ -322,8 +322,8 @@ int main(int argc, char **argv) {
 	glutInitWindowSize(600, 400);
 	glutCreateWindow("paint");
 	glutCallbacks();
-	init();
 	initMenu();
+	init();
 	glutMainLoop();
 
 	return 0;
