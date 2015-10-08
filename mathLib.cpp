@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "mathLib.h"
+#include <iostream>
 
 /*Point2d class*/
 Point2d::Point2d(){
@@ -60,6 +61,7 @@ Colour::Colour(float r, float g, float b){
 }
 
 void Colour::randomize(){
+
 	this->r=rand() / (RAND_MAX + 1.);
 	this->g=rand() / (RAND_MAX + 1.);
 	this->b=rand() / (RAND_MAX + 1.);

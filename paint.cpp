@@ -3,13 +3,12 @@
 #include <gl/gl.h>
 #include <stdio.h>
 #include <algorithm>
-
+#include <time.h>
 #include "mathLib.cpp"
 
 /*
 STILL NEED:
 - line drawing function
-- can i use gl_poly for clear?
 */
 
 //global accessible variables for clicked points
@@ -61,27 +60,34 @@ void straightLine(Point2d *p1, Point2d *p2){
 	}
 }
 
-//line drawing algorithm
+///line drawing algorithm
 void bresenham(Point2d *p1, Point2d *p2){
-	if (p1->x > p2->x){
-		std::swap(p1,p2);
+	bool steep=false;
+	int* p1y = &(p1->y);
+	int* p1x = &(p1->x);
+	int* p2y = &(p2->y);
+	int* p2x = &(p2->x);
+	if (abs(*p2y - *p1y) > abs(*p2x - *p1x)){
+		std::swap(p1y, p1x);
+		std::swap(p2y, p2x);
+		steep=true;
 	}
 
-	if (abs(p2->y - p1->y) > abs(p2->x - p1->x)){
-		std::swap(p1->y, p1->x);
-		std::swap(p2->y, p2->x);
+	if (*p1x > *p2x){
+		std::swap(p1x,p2x);
+		std::swap(p1y,p2y);
 	}
 
-	int dx = p2->x - p1->x;
-	int dy = abs(p2->y - p1->y);
+	int dx = *p2x - *p1x;
+	int dy = abs(*p2y - *p1y);
 	int d = 2*dy - dx;
 	int incrX = dy*2;
 	int incrXY = 2*dy - 2*dx;
-	int x = p1->x;
-	int y = p1->y;
-	printf("from %i, %i to %i, %i \n", x, y, p2->x, p2->y);
-	printf("dx: %i \n dy: %i \n d: %i \n", dx, dy, d);
-	while (x <= p2->x){
+	int x = *p1x;
+	int y = *p1y;
+	if (steep) glVertex2i(y,x);
+	else glVertex2i(x,y);
+	while (x < *p2x){
 		if (d <= 0){
 			d += incrX;
 			x += 1;
@@ -89,10 +95,11 @@ void bresenham(Point2d *p1, Point2d *p2){
 		else {
 			d += incrXY;
 			x += 1;
-			y += (y < p2->y) ? 1 : -1;
+			y += (y < *p2y) ? 1 : -1;
 		}
-		glVertex2i(x, y);
-		printf("point: %i, %i \n", x, y);
+		if (steep) glVertex2i(y,x);
+		//if (steep && dy>0) glVertex2i()
+		else glVertex2i(x, y);
 	}
 }
 
@@ -113,28 +120,19 @@ void drawLine() {
 		bresenham(click1, click2);
 	glEnd();
 	glFlush();
-	printf("called drawline \n");
 }
 
 //used for rectangle drawing mode
 void drawRectangle(){
-	glBegin(GL_LINES);
-
-		glVertex2i(click1->x, click1->y);
-		glVertex2i(click1->x, click2->y);
-
-		glVertex2i(click1->x, click2->y);
-		glVertex2i(click2->x, click2->y);
-
-		glVertex2i(click2->x, click2->y);
-		glVertex2i(click2->x, click1->y);
-
-		glVertex2i(click2->x, click1->y);
-		glVertex2i(click1->x, click1->y);
-	
+	Point2d *otherCorner = new Point2d(click1->x, click2->y);
+	Point2d *anotherCorner = new Point2d(click2->x, click1->y);
+	glBegin(GL_POINTS);
+		bresenham(click1, otherCorner);
+		bresenham(otherCorner, click2);
+		bresenham(click2, anotherCorner);
+		bresenham(anotherCorner,click1);
 	glEnd();
 	glFlush();
-	printf("called drawrect \n");
 }
 
 //used for circle drawing mode-
@@ -169,7 +167,6 @@ void drawClear(){
 
 //mouse click handler
 void mouse(int button, int state, int x, int y){
-	printf("mouse clicked at %i, %i \n", x, y);
 	glColor3f(drawColour->r,drawColour->g,drawColour->b);
 
 	if (state == GLUT_DOWN){
@@ -181,12 +178,10 @@ void mouse(int button, int state, int x, int y){
 			if (whichClick == 1){
 				*click1 = Point2d(x, y);
 				whichClick = 2;
-				printf("assigned click 1 \n");
 			}
 			else {
 				*click2 = Point2d(x, y);
 				whichClick = 1;
-				printf("assigned click 2 \n");
 				if (drawShape==line){
 					drawLine();
 				}
@@ -206,13 +201,6 @@ void motion(int x, int y){
 		*click1 = Point2d(x, y);
 		drawPoint();
 	}
-}
-
-void init() {
-	glPointSize(pointSize);
-	glMatrixMode(GL_PROJECTION);
-	gluOrtho2D(0.0f, 600.0f, 400.0f, 0.0f);
-	drawClear();
 }
 
 void menu(int val){
@@ -295,12 +283,10 @@ void special(int key, int x, int y){
 	if (key == GLUT_KEY_UP && pointSize <= 20.0){
 		pointSize += 1.0;
 		glPointSize(pointSize);
-		printf("increased point size to %f \n", pointSize);
 	}
 	else if (key == GLUT_KEY_DOWN && pointSize >= 1.0){
 		pointSize += -1.0;
 		glPointSize(pointSize);
-		printf("decreased point size to %f \n", pointSize);
 	}
 }
 
@@ -315,15 +301,21 @@ void glutCallbacks(){
 	
 }
 
-int main(int argc, char **argv) {
-	glutInit(&argc, argv);
-	//glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
-	//glutInitWindowPosition(200, 200);
+void init() {
 	glutInitWindowSize(600, 400);
 	glutCreateWindow("paint");
-	glutCallbacks();
+	glPointSize(pointSize);
+	glMatrixMode(GL_PROJECTION);
+	gluOrtho2D(0.0f, 600.0f, 400.0f, 0.0f);
 	initMenu();
+	drawClear();
+}
+
+int main(int argc, char **argv) {
+	srand(time(0));
+	glutInit(&argc, argv);
 	init();
+	glutCallbacks();
 	glutMainLoop();
 
 	return 0;
