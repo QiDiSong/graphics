@@ -2,23 +2,22 @@
 #include <gl/glut.h>
 #include <gl/gl.h>
 #include <stdio.h>
-#include <algorithm>
 #include <time.h>
 #include "mathLib.cpp"
 
-/*
-STILL NEED:
-- line drawing function
-*/
+//VICKY BILBILY
+//1317465
 
-//global accessible variables for clicked points
+//Initalizing global variables
+
+//Global accessible Point2d objects for mouse clicks.
 Point2d *click1 = new Point2d(0, 0);
 Point2d *click2= new Point2d(0, 0);
 
-//is it the first or second click?
+//Is it the first or second click? Relevant to different shape modes.
 int whichClick = 1;
 
-//stored colours
+//Stored colours.
 Colour *red = new Colour(1.0f, 0.0f, 0.0f);
 Colour *green = new Colour(0.0f, 1.0f, 0.0f);
 Colour *blue = new Colour(0.0f, 0.0f, 1.0f);
@@ -26,58 +25,40 @@ Colour *purple = new Colour(1.0f, 0.0f, 1.0f);
 Colour *yellow = new Colour(1.0f, 1.0f, 0.0f);
 Colour *drawColour = new Colour(1.0f, 1.0f, 1.0f); //default colour
 
-//point size (defaults to 2)
+//Point size (defaults to 2).
 float pointSize = 2.0f;
 
-//shape modes
+//Shape modes, assigned values for menu callback.
 int point = 0;
 int line = 1;
 int rectangle = 2;
 int circle = 3;
 int clear = 4;
-int drawShape = point; //default shape
+int drawShape = point; //default shape is "point"
 
-void straightLine(Point2d *p1, Point2d *p2){
-	if (p1->x == p2->x) {
-		if (p2->x < p1->x){
-			std::swap(p1,p2);
-		}
-		int x = p1->x;
-		while (x <= p2->x){
-			glVertex2i(x, p1->y);
-			x += 1;
-		}
-	}
-	else if (p1->y == p2->y){
-		if (p2->y < p1->y){
-		std::swap(p1,p2);
-		}
-		int y = p1->y;
-		while (y <= p2->y){
-			glVertex2i(p1->x, y);
-			y += 1;
-		}
-	}
-}
-
-///line drawing algorithm
+//Line drawing algorithm
 void bresenham(Point2d *p1, Point2d *p2){
 	bool steep=false;
+
+	//Assigning pointers so that swapping does not mess up other calculations that require the 
+	//given points (namely in drawRect)
 	int* p1y = &(p1->y);
 	int* p1x = &(p1->x);
 	int* p2y = &(p2->y);
 	int* p2x = &(p2->x);
-	if (abs(*p2y - *p1y) > abs(*p2x - *p1x)){
+
+	if (abs(*p2y - *p1y) > abs(*p2x - *p1x)){ //If the line is steep, swap Xs and Ys
 		std::swap(p1y, p1x);
 		std::swap(p2y, p2x);
 		steep=true;
 	}
 
-	if (*p1x > *p2x){
+	if (*p1x > *p2x){ //Make the left-most point p1.
 		std::swap(p1x,p2x);
 		std::swap(p1y,p2y);
 	}
 
+	//Bresenham's algorithm.
 	int dx = *p2x - *p1x;
 	int dy = abs(*p2y - *p1y);
 	int d = 2*dy - dx;
@@ -85,8 +66,10 @@ void bresenham(Point2d *p1, Point2d *p2){
 	int incrXY = 2*dy - 2*dx;
 	int x = *p1x;
 	int y = *p1y;
-	if (steep) glVertex2i(y,x);
+	//Assign first point.
+	if (steep) glVertex2i(y,x); //Switch Y and X coordinates, if they were swapped earlier
 	else glVertex2i(x,y);
+	//Assign the rest of the points...
 	while (x < *p2x){
 		if (d <= 0){
 			d += incrX;
@@ -98,12 +81,11 @@ void bresenham(Point2d *p1, Point2d *p2){
 			y += (y < *p2y) ? 1 : -1;
 		}
 		if (steep) glVertex2i(y,x);
-		//if (steep && dy>0) glVertex2i()
 		else glVertex2i(x, y);
 	}
 }
 
-//used for point drawing mode
+//Draws point based on mouse-click.
 void drawPoint() {
 	glBegin(GL_POINTS);
 			glVertex2i(click1->x, click1->y);
@@ -111,21 +93,20 @@ void drawPoint() {
 	glFlush();
 }
 
-//used for line drawing mode
+//Draws line based on two mouse-clicks and bresenham() function.
 void drawLine() {
-	// glBegin(GL_LINES);
-	// 		glVertex2i(click1->x, click1->y);
-	// 		glVertex2i(click2->x, click2->y);
 	glBegin(GL_POINTS);
 		bresenham(click1, click2);
 	glEnd();
 	glFlush();
 }
 
-//used for rectangle drawing mode
+//Draws rectangle based on two mouse-clicks and bresenham() function.
 void drawRectangle(){
+	// Determine remaining corners based on the two clicks
 	Point2d *otherCorner = new Point2d(click1->x, click2->y);
 	Point2d *anotherCorner = new Point2d(click2->x, click1->y);
+	//Draw!
 	glBegin(GL_POINTS);
 		bresenham(click1, otherCorner);
 		bresenham(otherCorner, click2);
@@ -135,7 +116,7 @@ void drawRectangle(){
 	glFlush();
 }
 
-//used for circle drawing mode-
+//Draws circle based on two mouse-clicks and bresenham() function.
 //referenced https://banu.com/blog/7/drawing-circles/
 void drawCircle(){
 	int radius = distance(click1, click2);
@@ -152,7 +133,7 @@ void drawCircle(){
 	glFlush();
 }
 
-//clears the screen, pixel by pixel
+//Clears the screen by drawing every pixel black.
 void drawClear(){
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glBegin(GL_POINTS);
@@ -165,7 +146,7 @@ void drawClear(){
 	glFlush();
 }
 
-//mouse click handler
+//Mouse click handler.
 void mouse(int button, int state, int x, int y){
 	glColor3f(drawColour->r,drawColour->g,drawColour->b);
 
@@ -196,6 +177,7 @@ void mouse(int button, int state, int x, int y){
 	}
 }
 
+//Motion-click handler.
 void motion(int x, int y){
 	if (drawShape == point){
 		*click1 = Point2d(x, y);
@@ -203,6 +185,7 @@ void motion(int x, int y){
 	}
 }
 
+//Menu funcion for glutCreateMenu.
 void menu(int val){
 	switch (val){
 		case 0:
@@ -250,6 +233,7 @@ void menu(int val){
 	}
 }
 
+//Initialize menu values.
 void initMenu(){
 	int id = glutCreateMenu(menu);
 	int colourMenu = glutCreateMenu(menu);
@@ -277,30 +261,31 @@ void initMenu(){
 		glutAddMenuEntry("Circle", 9);
 }
 
+//Display function for glutDisplayFunc.
 void display(void) {}
 
+//Special key handler.
 void special(int key, int x, int y){
-	if (key == GLUT_KEY_UP && pointSize <= 20.0){
+	if (key == GLUT_KEY_UP && pointSize < 20.0){ //Up arrow increases point size.
 		pointSize += 1.0;
 		glPointSize(pointSize);
 	}
-	else if (key == GLUT_KEY_DOWN && pointSize >= 1.0){
+	else if (key == GLUT_KEY_DOWN && pointSize > 1.0){ //Down arrow decreases point size.
 		pointSize += -1.0;
 		glPointSize(pointSize);
 	}
 }
 
+//All callback functions in one place.
 void glutCallbacks(){
 	glutDisplayFunc(display);
-	// glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
-	// glutReshapeFunc(reshape);
-	// glutPassiveMotionFunc(passive);
 	glutMouseFunc(mouse);
 	glutMotionFunc(motion);
 	
 }
 
+//Initialize.
 void init() {
 	glutInitWindowSize(600, 400);
 	glutCreateWindow("paint");
@@ -311,7 +296,34 @@ void init() {
 	drawClear();
 }
 
+//Play instructions to be printed on startup.
+void instructions(){
+	printf("\n\n Welcome to Paint!");
+	printf("\n by Vicky Bilbily :)");
+	printf("\n\n Click anywhere to get started.");
+	printf("\n\n INSTRUCTIONS:");
+	printf("\n Left click: draw according to current shape-mode.");
+	printf("\n Up arrow: increase draw size by 1 up to 20 pixels.");
+	printf("\n Up arrow: decrease draw size by 1 up to 1 pixel.");
+	printf("\n Right click: display the menu.");
+	printf("\n * MENU OPTIONS:");
+	printf("\n -> Shapes: select an item from this submenu to change the current shape-mode.");
+	printf("\n -> Colours: select an item from this submenu to change the current draw-colour");
+	printf("\n -> Clear: clears all previously drawn items from the canvas, leaving it black.");
+	printf("\n -> Exit: close the program.");
+	printf("\n * SHAPE OPTIONS");
+	printf("\n -> Point: click or click-and-drag anywhere to draw a point at that coordinate.");
+	printf("\n -> Line: two clicks- draws a line between the two coordinates");
+	printf("\n -> Rectangle: two click- draws a rectangle with diagonally-opposite corners at the clicked coordinates.");
+	printf("\n -> Circle: two clicks- draws a circle with a midpoint at the first click and a radius as large as the distance between the two coordinates.");
+	printf("\n * COLOUR OPTIONS");
+	printf("\n -> Red, Green, Blue, etc.: changes the draw colour to the selected colour.");
+	printf("\n -> Random: changes the draw colour to a randomly generated colour.");
+	printf("\n\n That's all! Enjoy.");
+}
+//Main function.
 int main(int argc, char **argv) {
+	instructions();
 	srand(time(0));
 	glutInit(&argc, argv);
 	init();
