@@ -15,11 +15,11 @@ void NodeModel::nodeSpecificCodeDown(){
 	switch (modelType){
 	case Sphere:
 		glutSolidSphere(1, 100, 100);
-		//box = BoundingBox(1);
+		box = BoundingBox::BoundingBox(1);
 		break;
 	case Cube:
 		glutSolidCube(1);
-		//box = BoundingBox(1);
+		box = BoundingBox::BoundingBox(1);
 		break;
 	case Teapot:
 		glutSolidTeapot(1);
