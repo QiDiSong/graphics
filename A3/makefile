@@ -24,14 +24,10 @@ else
 	endif
 endif
 
-all: modeller
-
-modeller: modeller.o
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+all: main
 
 main: main.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 clean:
-	$(RM) *.o modeller$(EXEEXT)
 	$(RM) *.o main$(EXEEXT)

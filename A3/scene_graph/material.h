@@ -9,11 +9,11 @@ class Material{
 public:
 	//constructors
 	Material();
-	Material(float amb[4], float dif[4], float spec[4], float sh);
+	Material(float* amb, float* dif, float* spec, float sh);
 
-	float ambient[4];
-	float diffuse[4];
-	float specular[4];
+	float* ambient;
+	float* diffuse;
+	float* specular;
 	float shine;
 };
 

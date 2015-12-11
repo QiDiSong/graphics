@@ -11,9 +11,11 @@ public:
 	void goToRoot();
 	void goToChild(int i);
 	void goToChildID(int id);
+	int getCurrentID();
 	void goToParent();
 	void insertChildNodeHere(Node *node);
 	void deleteThisNode();
+	void deleteChildByID(int id);
 
 	//Scene Graph Draw
 	void draw();

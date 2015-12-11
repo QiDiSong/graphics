@@ -19,8 +19,6 @@ implement next:
 - fix materials -> pick the 5 and make em changeable. also pick material for floor
 - draw indication of selection
 - dealing with ID's
-- resetting scene
-- scene rotation (copy from terrain)
 - load/save
 */
 
@@ -34,30 +32,37 @@ implement next:
 #include "scene_graph/structs.h"
 #include "scene_graph/sceneObj.cpp"
 
+//camera
 float pos[] = {0,1,0};
-float camPos[] = {2.5, 2.5, 5};
-float angle = 0.0f;
+float camPos[] = {10, 5, 10};
+float angleX = 0;
+float angleY = 0;
 
 //lighting
-float light_pos0[] = {10,10,10,1};
+float light_pos0[] = {1,1,0,1.0};
 float amb0[4] = {0.5,0.5,0.5,1};
-float diff0[4] = {0.5,0.5,0.5,1};
-float em0[4] = {0.5,0.5,0.5,1};
-float spec0[4] = {0.5,0.5,0.5,1};
+float diff0[4] = {1,1,1, 1};
+float spec0[4] = {1, 1, 1, 1};
+
+float light_pos1[] = {0,1,1,1.0};
+float amb1[4] = {0,0,0,1};
+float diff1[4] = {0,1,1, 1};
+float spec1[4] = {1, 1, 1, 1};
 
 //materials
 float m_amb[] = {0.5,0.5,0.5, 1.0};
 float m_dif[] = {0.5,0.5,0.5, 1.0};
-float m_spec[] = {0.5,0.5,0.5, 1.0};
-float shiny = 27.8;
-Material m1 = Material(m_amb, m_dif, m_spec, shiny);
+float m_spec[] = {0,0,0, 1.0};
+float shiny = 27.8*128;
+Material m1= Material (m_amb, m_dif, m_spec, shiny);
 
-//emerald
 float emAmb[] = {0.0215,	0.1745,	0.0215, 1.0};
 float emDif[] = {0.07568,	0.61424,	0.07568,1};
 float emSpec[] = {	0.633,	0.727811,	0.633,1};
 float emShiny = 0.6*128;
 Material m2 = Material (emAmb, emDif, emSpec, emShiny);
+
+Material curMat = m2;
 
 //node ids
 int masterID = 0;
@@ -70,17 +75,18 @@ int getID(){
 #include "scene_graph/nodeGroup.cpp"
 
 SceneGraph *SG;
-int nextObjID = 0;
-int currentObj = 0;
-int numberOfObjs = 0;
+int nextChild = 0;
+SceneObj * currentObj;
+int currentObjIndex = 0;
 
+//transform modes
 string t = "translate";
 string r = "rotate";
 string s = "scale";
 string transformMode = t;
-
 int mode = 0;
 
+//scene objects
 vector<SceneObj*> *sceneObjs = new vector<SceneObj*>;
 
 void insertObj(ModelType type){
@@ -88,22 +94,14 @@ void insertObj(ModelType type){
 
 	//scale node
 	Vector3D temp3;
-	temp3.x = 1;
-	temp3.y = 1;
-	temp3.z = 1;
 
 	//insert group node at root
 	NodeGroup *objGroup = new NodeGroup();
 	SG->insertChildNodeHere(objGroup);
-	SG->goToChild(nextObjID);
+	SG->goToChild(nextChild++);
 
+	int groupID = SG->getCurrentID(); //identify this object by it's group-node ID
 	//insert remaining nodes, child after child
-	//(rotate -> scale) -> translate -> (texture) -> model
-
-	//scale
-	NodeTransform *scNode = new NodeTransform(Scale, temp3);
-	SG->insertChildNodeHere(scNode);
-	SG->goToChild(0);
 
 	//reset temp vals to 0 to begin obj at origin, and rotations to be 0
 	temp3.x = 0;
@@ -120,9 +118,17 @@ void insertObj(ModelType type){
 	SG->insertChildNodeHere(rotNode);
 	SG->goToChild(0);
 
+	temp3.x = 1;
+	temp3.y = 1;
+	temp3.z = 1;
+
+	//scale
+	NodeTransform *scNode = new NodeTransform(Scale, temp3);
+	SG->insertChildNodeHere(scNode);
+	SG->goToChild(0);
+
 	//material
-	NodeMaterial *matNode = new NodeMaterial(m1);
-	//make material vector?
+	NodeMaterial *matNode = new NodeMaterial(curMat);
 	SG->insertChildNodeHere(matNode);
 	SG->goToChild(0);
 
@@ -131,12 +137,46 @@ void insertObj(ModelType type){
 	SG->insertChildNodeHere(modelNode);
 
 	//update globals
-	SceneObj* newObj = new SceneObj(nextObjID++, trNode, scNode, rotNode, matNode, modelNode);
+	SceneObj* newObj = new SceneObj(groupID, trNode, scNode, rotNode, matNode, modelNode);
 	sceneObjs->push_back(newObj);
-	currentObj = newObj->ID;
-	printf("%i \n",currentObj);
-	numberOfObjs++;
+	currentObj = newObj;
+	currentObjIndex = sceneObjs->size()-1;
+}
 
+void insertLight(float pos[4], float amb[4], float dif[4], float spec[4], int n){
+	SG->goToRoot();
+
+	//scale node
+	Vector3D temp3;
+	temp3.x = pos[0];
+	temp3.y = pos[1];
+	temp3.z = pos[2];
+
+	//insert group node at root
+	NodeGroup *objGroup = new NodeGroup();
+	SG->insertChildNodeHere(objGroup);
+	SG->goToChild(nextChild++);
+
+	int groupID = SG->getCurrentID();
+
+	//lighting
+	NodeLight *lightNode = new NodeLight(pos, amb, dif, spec, n);
+	SG->insertChildNodeHere(lightNode);
+	SG->goToChild(0);
+
+	//translate
+	NodeTransform *trNode = new NodeTransform(Translate, temp3);
+	SG->insertChildNodeHere(trNode);
+	SG->goToChild(0);
+
+	//model node
+	NodeModel *modelNode = new NodeModel(Lighting);
+	SG->insertChildNodeHere(modelNode);
+
+	//update globals
+	SceneObj* newObj = new SceneObj(groupID, trNode, lightNode, modelNode);
+	sceneObjs->push_back(newObj);
+	currentObj = newObj;
 }
 
 //callbacks
@@ -157,34 +197,42 @@ void keyboard(unsigned char key, int x, int y)
 			insertObj(Teapot);
 			break;
 		case 'a': //-x
-			if (mode%3==0) sceneObjs->at(currentObj)->translate(-0.1, 0, 0);
-			if (mode%3==1) sceneObjs->at(currentObj)->scale(-0.1, 0,0);
-			if (mode%3==2) sceneObjs->at(currentObj)->rotate(-5,0,0);
+			if (sceneObjs->size()!=0){
+				if (mode%3==0) currentObj->translate(-0.1, 0, 0);
+				if (mode%3==1) currentObj->scale(-0.1, 0,0);
+				if (mode%3==2) currentObj->rotate(-5,0,0);
+			}
 			break;
 		 case 'd': //+x
-			if (mode%3==0) sceneObjs->at(currentObj)->translate(0.1, 0, 0);
-			if (mode%3==1) sceneObjs->at(currentObj)->scale(0.1,0,0);
-			if (mode%3==2) sceneObjs->at(currentObj)->rotate(5,0,0);
+		 if (sceneObjs->size()!=0){
+				if (mode%3==0) currentObj->translate(0.1, 0, 0);
+				if (mode%3==1) currentObj->scale(0.1,0,0);
+				if (mode%3==2) currentObj->rotate(5,0,0);
+			}
 			break;
 		case 'q': //-z
-			if (mode%3==0) sceneObjs->at(currentObj)->translate(0, 0, -0.1);
-			if (mode%3==1) sceneObjs->at(currentObj)->scale(0, 0,-0.1);
-			if (mode%3==2) sceneObjs->at(currentObj)->rotate(0,0,-5);
+		if (sceneObjs->size()!=0){
+			if (mode%3==0) currentObj->translate(0, 0, -0.1);
+			if (mode%3==1) currentObj->scale(0, 0,-0.1);
+			if (mode%3==2) currentObj->rotate(0,0,-5);}
 			break;
 		case 'e': //+z
-			if (mode%3==0) sceneObjs->at(currentObj)->translate(0, 0, 0.1);
-			if (mode%3==1) sceneObjs->at(currentObj)->scale(0, 0,0.1);
-			if (mode%3==2) sceneObjs->at(currentObj)->rotate(0,0,5);
+		if (sceneObjs->size()!=0){
+			if (mode%3==0) currentObj->translate(0, 0, 0.1);
+			if (mode%3==1) currentObj->scale(0, 0,0.1);
+			if (mode%3==2) currentObj->rotate(0,0,5);}
 			break;
 		case 's': //-y
-			if (mode%3==0) sceneObjs->at(currentObj)->translate(0, -0.1, 0);
-			if (mode%3==1) sceneObjs->at(currentObj)->scale(0, -0.1,0);
-			if (mode%3==2) sceneObjs->at(currentObj)->rotate(0,-5,0);
+		if (sceneObjs->size()!=0){
+			if (mode%3==0) currentObj->translate(0, -0.1, 0);
+			if (mode%3==1) currentObj->scale(0, -0.1,0);
+			if (mode%3==2) currentObj->rotate(0,-5,0);}
 			break;
 		case 'w': //+y
-			if (mode%3==0) sceneObjs->at(currentObj)->translate(0, 0.1, 0);
-			if (mode%3==1) sceneObjs->at(currentObj)->scale(0, 0.1,0);
-			if (mode%3==2) sceneObjs->at(currentObj)->rotate(0,5,0);
+		if (sceneObjs->size()!=0){
+			if (mode%3==0) currentObj->translate(0, 0.1, 0);
+			if (mode%3==1) currentObj->scale(0, 0.1,0);
+			if (mode%3==2) currentObj->rotate(0,5,0);}
 			break;
 		case 't': //transform type toggle
 			mode++;
@@ -193,17 +241,28 @@ void keyboard(unsigned char key, int x, int y)
 			if (mode%3==2) transformMode = r;
 			break;
 		case 'x':
-			sceneObjs->erase(sceneObjs->begin()+currentObj);
+		if (sceneObjs->size()!=0){
+			//sceneObjs->erase(sceneObjs->begin()+currentObjIndex);
 			// also remove from tree
-			numberOfObjs--;
-			currentObj -= 1;
+		}
 		case 9: // toggle selected object (temporary fix before ray picking is implemented)
-			currentObj = (currentObj+1)%numberOfObjs;
+			currentObj = sceneObjs->at(currentObjIndex++%sceneObjs->size());
 			break;
 		default:
 			break;
 	}
 	glutPostRedisplay();
+}
+
+void deleteObj(int ID){
+	int index = -1;
+	for (int i=0; i<sceneObjs->size(); i++){
+		if (sceneObjs->at(i)->ID==ID){
+			index = i;
+			break;
+		}
+	}
+
 }
 
 void special(int key, int x, int y)
@@ -213,19 +272,26 @@ void special(int key, int x, int y)
 	{
 
 		case GLUT_KEY_LEFT:
-			camPos[0]-=0.1;
+			if (glutGetModifiers()==GLUT_ACTIVE_CTRL) angleX += 5;
+			else camPos[0]-=0.1;
+			
 			break;
 
 		case GLUT_KEY_RIGHT:
-			camPos[0]+=0.1;
+			if (glutGetModifiers()==GLUT_ACTIVE_CTRL) angleX += -5;
+			else camPos[0]+=0.1;
+			
 			break;
 
 		case GLUT_KEY_UP:
-			camPos[2] -= 0.1;
+			if (glutGetModifiers()==GLUT_ACTIVE_CTRL) angleY += 5;
+			else camPos[2] -= 0.1;
+			
 			break;
 
 		case GLUT_KEY_DOWN:
-			camPos[2] += 0.1;
+			if (glutGetModifiers()==GLUT_ACTIVE_CTRL) angleY += -5;
+			else camPos[2] += 0.1;
 			break;
 		
 		case GLUT_KEY_HOME:
@@ -246,13 +312,16 @@ void init(void)
 
 	glClearColor(0, 0, 0, 0);
 	glColor3f(1, 1, 1);
+	glShadeModel(GL_SMOOTH);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45, 1, 1, 100);
-
+	glEnable(GL_LIGHTING);
 	//init our scenegraph
 	SG = new SceneGraph();
+	insertLight(light_pos0, amb0, diff0, spec0, 0);
+	insertLight(light_pos1, amb1, diff1, spec1, 1);
 
 }
 
@@ -279,14 +348,9 @@ void drawText(){
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	
-
 }
 
 void drawXZPlane(float y_intercept, float size){
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_amb);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_dif);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_spec);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shiny);
 	glColor3f(0.2,0.2,0.2);
 	glLineWidth(1);
 	glBegin(GL_QUADS);
@@ -346,30 +410,17 @@ void display(void)
 	glLoadIdentity();
 
 	gluLookAt(camPos[0], camPos[1], camPos[2], 0,0,0, 0,1,0);
-
-	glColor3f(1,1,1);
-
-	
-	glPushMatrix();
-	glTranslatef(light_pos0[0],light_pos0[1],light_pos0[2]);
-	glutSolidSphere(1,50,50);
-	glPopMatrix();
+	glRotatef(angleY,1,0,0);
+	glRotatef(angleX,0,1,0);
+	//glTranslatef(50, 0, 50);
 
 	drawAxis(50);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
-	glLightfv(GL_LIGHT0,GL_POSITION,light_pos0);
-	glLightfv(GL_LIGHT0,GL_AMBIENT,amb0);
-	glLightfv(GL_LIGHT0,GL_EMISSION,em0);
-	glLightfv(GL_LIGHT0,GL_DIFFUSE,diff0);
-	glLightfv(GL_LIGHT0,GL_SPECULAR,spec0);
-
-	//glutSolidSphere(1, 100, 100);
 	//draw the sceneGraph
+	glEnable(GL_LIGHTING);
+	setMaterial(m1);
 	drawXZPlane(0,50);
-	
+
+	glColor3f(0.5,0.5,0.5);
 	SG->draw();
 	drawText();
 

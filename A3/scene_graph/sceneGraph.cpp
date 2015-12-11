@@ -5,7 +5,6 @@
 SceneGraph::SceneGraph(){
 	rootNode = new Node();
 	currentNode = rootNode;
-	printf("scene graph init done\n");
 }
 
 //Scene Graph Navigation
@@ -34,6 +33,10 @@ void SceneGraph::goToChildID(int id){
 	if (correctIndex = -1) printf("ID not found among children \n");
 }
 
+int SceneGraph::getCurrentID(){
+	return currentNode->ID;
+}
+
 void SceneGraph::goToParent(){
 	if (currentNode->parent != 0)
 		currentNode = currentNode->parent;
@@ -53,7 +56,23 @@ void SceneGraph::deleteThisNode(){
 	}
 }
 
+void SceneGraph::deleteChildByID(int id){
+	int index = -1;
+	for (int i=0; i<currentNode->children->size(); i++){
+		if (currentNode->children->at(i)->ID==id){
+			index = i;
+			currentNode->children->erase(currentNode->children->begin()+index);
+			break;
+		}
+	}
+	if (index==-1) printf("child not found \n");
+}
+
 //draw the scenegraph
 void SceneGraph::draw(){
 	rootNode->draw();
 }
+
+// void SceneGraph::save(){
+// 	rootNode->save();
+// }

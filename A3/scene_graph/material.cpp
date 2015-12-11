@@ -9,10 +9,10 @@ Material::Material(){
 	//bloop
 }
 
-Material::Material(float amb[4], float dif[4], float spec[4], float sh){
-	*this->ambient = *amb;
-	*this->diffuse = *dif;
-	*this->specular = *spec;
+Material::Material(float* amb, float* dif, float* spec, float sh){
+	this->ambient = amb;
+	this->diffuse = dif;
+	this->specular = spec;
 	this->shine = sh;
 }
 

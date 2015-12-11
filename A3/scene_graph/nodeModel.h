@@ -3,13 +3,12 @@
 
 #include "node.h"
 #include <gl/glut.h>
-#include "plane.h"
 
 enum ModelType{
 	Sphere,
 	Cube,
 	Teapot,
-	Custom
+	Lighting,
 };
 
 
@@ -19,7 +18,7 @@ public:
 	NodeModel(ModelType whatType);	//constructor
 
 	virtual void nodeSpecificCodeDown();
-private:
+
 	ModelType modelType;
 	//BoundingBox box;
 

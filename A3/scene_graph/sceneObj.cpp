@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sceneObj.h"
-#include "BoundingBox.h"
 
 /*SceneObj*/
 SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeTransform *scaleNode, NodeTransform *rotNode, NodeMaterial *matNode, NodeModel *modelNode){ //modify this to include instantiation of material, later
@@ -14,26 +13,33 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeTransform *scaleNode, N
 	this->matNode = matNode;
 	this->modelNode = modelNode;
 
-	switch (modelType){
-	case Sphere:
-		box = BoundingBox::BoundingBox(1);
-		break;
-	case Cube:
-		box = BoundingBox::BoundingBox(1);
-		break;
-	case Teapot:
-		break;
-	case Custom:
-		//own mesh thing
-		break;
-	}
+	// switch (modelNode->modelType){
+	// case Sphere:
+	// 	this->box = new BoundingBox(1);
+	// 	break;
+	// case Cube:
+	// 	this->box = new BoundingBox(1);
+	// 	break;
+	// case Teapot:
+	// 	break;
+	// case Custom:
+	// 	//own mesh thing
+	// 	break;
+	//}
 }
+
+//lighting obj
+SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeLight *lightNode, NodeModel *modelNode){
+	this->ID = ID;
+	this->transNode = transNode;
+	this->modelNode = modelNode;
+	this->lightNode = lightNode;
 }
 
 void SceneObj::rotate(float angleX, float angleY, float angleZ){
-	rotNode->amount3.x = angleX;
-	rotNode->amount3.y = angleY;
-	rotNode->amount3.z = angleZ;
+	rotNode->amount3.x += angleX;
+	rotNode->amount3.y += angleY;
+	rotNode->amount3.z += angleZ;
 }
 
 void SceneObj::scale(float x, float y, float z){
@@ -46,6 +52,11 @@ void SceneObj::translate(float x, float y, float z){
 	transNode->amount3.x += x;
 	transNode->amount3.y += y;
 	transNode->amount3.z += z;
+	if (modelNode->modelType==Lighting){
+		lightNode->position[0]+=x;
+		lightNode->position[1]+=y;
+		lightNode->position[2]+=z;
+	}
 }
 
 //print method

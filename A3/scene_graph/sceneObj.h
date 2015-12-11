@@ -8,19 +8,8 @@
 #include "nodeTransform.cpp"
 #include "nodeModel.cpp"
 #include "nodeMaterial.cpp"
-
-enum Shape{
-	CUBE,
-	SPHERE,
-	CONE,
-	CYLINDER,
-	TORUS,
-	TEAPOT,
-	TETRAHEDRON,
-	OCTAHEDRON,
-	DODECAHEDRON,
-	ICOSAHEDRON
-};
+#include "nodeLight.cpp"
+//#include "boundingBox.h"
 
 //scene object class
 class SceneObj{
@@ -28,6 +17,8 @@ public:
 	//constructor
 	SceneObj();
 	SceneObj(int ID, NodeTransform *transNode, NodeTransform *scaleNode, NodeTransform *rotNode, NodeMaterial *matNode, NodeModel *modelNode);
+	//lighting constructor
+	SceneObj(int ID, NodeTransform *transNode, NodeLight *lightNode, NodeModel *modelNode);
 
 	//instance variables (add bounding box!)
 	int ID;
@@ -36,6 +27,8 @@ public:
 	NodeTransform *rotNode;
 	NodeMaterial *matNode;
 	NodeModel *modelNode;
+	NodeLight *lightNode;
+	//BoundingBox * box;
 
 	//bounding box???
 	
@@ -44,7 +37,6 @@ public:
 	void scale(float x, float y, float z);
 	void rotate(float x, float y, float z);
 
-	void changeMaterial(Material m);
 };
 
 #endif
