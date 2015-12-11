@@ -2,12 +2,12 @@
 
 Plane::Plane(Point a, Point b) {
 	//set first point as normal(a, b, c)
-	this->a = a.x;
-	this->b = a.y;
-	this->c = a.z;
+	a = d.x;
+	b = d.y;
+	c = d.z;
 
 	//set second point as point(x, y, z)
-	this->d = -(a.x*b.x + a.y*b.y + a.z + b.z);
+	g = -(d.x*e.x + d.y*e.y + d.z + e.z);
 
 }
 

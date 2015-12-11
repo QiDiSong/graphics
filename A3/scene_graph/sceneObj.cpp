@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "sceneObj.h"
 
+
 /*SceneObj*/
 SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeTransform *scaleNode, NodeTransform *rotNode, NodeMaterial *matNode, NodeModel *modelNode){ //modify this to include instantiation of material, later
 	this->ID = ID;
@@ -12,6 +13,7 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeTransform *scaleNode, N
 	this->rotNode = rotNode;
 	this->matNode = matNode;
 	this->modelNode = modelNode;
+	box = new BoundingBox(1);
 
 	// switch (modelNode->modelType){
 	// case Sphere:

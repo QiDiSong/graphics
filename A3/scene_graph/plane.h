@@ -7,7 +7,7 @@ public:
 	int a;
 	int b;
 	int c;
-	int d;
+	int g;
 
 	//contructor
 	Plane(Point a, Point b);
@@ -16,7 +16,7 @@ public:
 	~Plane();
 
 	//takes point to check
-	bool intersects(Plane a);
+	bool intersects(Point);
 };
 
 #endif

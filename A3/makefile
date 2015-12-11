@@ -27,7 +27,7 @@ endif
 all: main
 
 main: main.o
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+	$(CC) -o $@ main.o BoundingBox.o point.o plane.o $(CFLAGS) $(LDFLAGS)
 
 clean:
 	$(RM) *.o main$(EXEEXT)

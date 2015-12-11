@@ -62,6 +62,9 @@ float emSpec[] = {	0.633,	0.727811,	0.633,1};
 float emShiny = 0.6*128;
 Material m2 = Material (emAmb, emDif, emSpec, emShiny);
 
+float nearPoint[] = {0,0,0};
+float farPoint[] = {1,1,1};
+
 int mat = 0;
 Material curMat = m1;
 
@@ -324,6 +327,57 @@ void special(int key, int x, int y)
 	glutPostRedisplay();
 }
 
+void mouse(int button, int state, int x, int y){
+	if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+			double matModelView[16], matProjection[16]; 
+	int viewport[4]; 
+
+		double start[] ={0,0,0}, end[]={1,1,1};
+
+	glGetDoublev(GL_MODELVIEW_MATRIX, matModelView); 
+	glGetDoublev(GL_PROJECTION_MATRIX, matProjection); 
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	//unproject values
+	double winX = (double)x; 
+	double winY = y - (double)y; 
+
+	//get point on near plan, set z value to 0
+	gluUnProject(winX, winY, 0.0, matModelView, matProjection, 
+         viewport, &start[0], &start[1], &start[2]);
+
+	//get point on far plane, set z value to 1
+    gluUnProject(winX, winY, 1.0, matModelView, matProjection, 
+         viewport, &end[0], &end[1], &end[2]); 
+	double R0x, R0y, R0z;
+	double Rdx, Rdy, Rdz;
+
+	R0x = start[0];
+	R0y = start[1];
+	R0z = start[2];
+
+	Rdx = end[0] - start[0];
+	Rdy = end[1] - start[1];
+	Rdz = end[2] - start[2];
+
+	//magnitude
+	double M = sqrt(Rdx*Rdx + Rdy*Rdy + Rdz* Rdz);
+
+	//unit vector
+	Rdx /= M;
+	Rdy /= M;
+	Rdz /= M;
+	nearPoint[0] = camPos[0];
+	nearPoint[1] = camPos[1];
+	nearPoint[2] = camPos[2];
+
+	farPoint[0] = Rdx;
+	farPoint[1] = Rdy;
+	farPoint[2] = Rdz;
+	}
+
+}
+
 
 void init(void)
 {	GLuint id = 1;
@@ -423,6 +477,17 @@ void display(void)
 
 	float origin[3] = {0,0,0};
 
+	glPushMatrix();
+	glTranslatef(nearPoint[0], nearPoint[1], nearPoint[2]);
+	//printf("%f, %f, %f\n", nearPoint[0], nearPoint[1], nearPoint[2]);
+	glutSolidCube(1);
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(farPoint[0], farPoint[1], farPoint[2]);
+	printf("%f, %f, %f\n", farPoint[0], farPoint[1], farPoint[2]);
+	glutSolidCube(1);
+	glPopMatrix();
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -460,6 +525,7 @@ int main(int argc, char** argv)
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
+	//glutMouseFunc(mouse);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);

@@ -9,7 +9,7 @@
 #include "nodeModel.cpp"
 #include "nodeMaterial.cpp"
 #include "nodeLight.cpp"
-//#include "boundingBox.h"
+#include "BoundingBox.h"
 
 //scene object class
 class SceneObj{
@@ -28,7 +28,7 @@ public:
 	NodeMaterial *matNode;
 	NodeModel *modelNode;
 	NodeLight *lightNode;
-	//BoundingBox * box;
+	BoundingBox * box;
 
 	//bounding box???
 	

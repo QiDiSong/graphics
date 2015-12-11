@@ -1,5 +1,6 @@
 #ifndef __BOUNDINGBOX_H__	//guard against cyclic dependancy
 #define __BOUNDINGBOX_H__
+#include "node.h"
 
 #include <gl/glut.h>
 #include "plane.h"
@@ -11,14 +12,16 @@ public:
 
 	//destructor
 	~BoundingBox();
-//private:
+
+	bool intersects(Point);
+private:
 	Plane * top;
 	Plane * bottom;
 	Plane * left;
 	Plane * right;
 	Plane * front;
 	Plane * back;
-	int objectSize;
+	//int objectSize;
 };
 
 #endif
