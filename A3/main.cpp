@@ -264,6 +264,7 @@ void keyboard(unsigned char key, int x, int y)
 			if (mat%2==0) curMat = m1;
 			if (mat%2==1) curMat = m2;
 			currentObj->changeMaterial(curMat);
+			break;
 		case 'x':
 			if (sceneObjs->size()!=0){
 				deleteObj(currentObj->ID);

@@ -1,6 +1,6 @@
 #include "plane.h"
 
-Plane::Plane(Point a, Point b) {
+Plane::Plane(Point d, Point e) {
 	//set first point as normal(a, b, c)
 	a = d.x;
 	b = d.y;
@@ -16,7 +16,7 @@ Plane::~Plane()
 
 }
 
-bool Plane::intersects(Plane a)
+bool Plane::intersects(Point p)
 {
 	return false;
 }

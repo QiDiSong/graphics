@@ -10,13 +10,13 @@ public:
 	int g;
 
 	//contructor
-	Plane(Point a, Point b);
+	Plane(Point a, Point e);
 
 	//deconstructor
 	~Plane();
 
 	//takes point to check
-	bool intersects(Point);
+	bool intersects(Point p);
 };
 
 #endif

@@ -13,7 +13,7 @@ public:
 	//destructor
 	~BoundingBox();
 
-	bool intersects(Point);
+	bool intersects(int x, int y);
 private:
 	Plane * top;
 	Plane * bottom;
