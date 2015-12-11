@@ -36,6 +36,10 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeLight *lightNode, NodeM
 	this->lightNode = lightNode;
 }
 
+void SceneObj::changeMaterial(Material m){
+	this->matNode->mat = m;
+}
+
 void SceneObj::rotate(float angleX, float angleY, float angleZ){
 	rotNode->amount3.x += angleX;
 	rotNode->amount3.y += angleY;

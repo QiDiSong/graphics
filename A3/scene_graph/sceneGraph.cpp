@@ -57,13 +57,17 @@ void SceneGraph::deleteThisNode(){
 }
 
 void SceneGraph::deleteChildByID(int id){
+	goToRoot();
+	printf("looking for: %i \n",id);
 	int index = -1;
 	for (int i=0; i<currentNode->children->size(); i++){
+		printf("comparing %i to %i \n",currentNode->children->at(i)->ID,id);
 		if (currentNode->children->at(i)->ID==id){
 			index = i;
 			currentNode->children->erase(currentNode->children->begin()+index);
 			break;
 		}
+		printf("is not %i \n", currentNode->children->at(i)->ID);
 	}
 	if (index==-1) printf("child not found \n");
 }

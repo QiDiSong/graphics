@@ -36,6 +36,7 @@ public:
 	void translate(float x, float y, float z);
 	void scale(float x, float y, float z);
 	void rotate(float x, float y, float z);
+	void changeMaterial(Material m);
 
 };
 

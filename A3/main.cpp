@@ -15,10 +15,10 @@
 
 /*SCENE GRAPH:
 implement next:
-- deleting
-- fix materials -> pick the 5 and make em changeable. also pick material for floor
+- deleting + reset
+- disable transforms on lights...
+- add 5 materials!
 - draw indication of selection
-- dealing with ID's
 - load/save
 */
 
@@ -62,7 +62,8 @@ float emSpec[] = {	0.633,	0.727811,	0.633,1};
 float emShiny = 0.6*128;
 Material m2 = Material (emAmb, emDif, emSpec, emShiny);
 
-Material curMat = m2;
+int mat = 0;
+Material curMat = m1;
 
 //node ids
 int masterID = 0;
@@ -179,6 +180,21 @@ void insertLight(float pos[4], float amb[4], float dif[4], float spec[4], int n)
 	currentObj = newObj;
 }
 
+void deleteObj(int ID){
+	SG->deleteChildByID(ID);
+	int index = -1;
+	for (int i=0; i<sceneObjs->size(); i++){
+		if (sceneObjs->at(i)->ID==ID){
+			index = i;
+			break;
+		}
+	}
+	sceneObjs->erase(sceneObjs->begin()+index);
+	currentObj = sceneObjs->at(sceneObjs->size()-1);
+	nextChild--;
+
+}
+
 //callbacks
 void keyboard(unsigned char key, int x, int y)
 {
@@ -240,29 +256,31 @@ void keyboard(unsigned char key, int x, int y)
 			if (mode%3==1) transformMode = s;
 			if (mode%3==2) transformMode = r;
 			break;
+		case 'm':
+			mat++;
+			if (mat%2==0) curMat = m1;
+			if (mat%2==1) curMat = m2;
+			currentObj->changeMaterial(curMat);
 		case 'x':
-		if (sceneObjs->size()!=0){
-			//sceneObjs->erase(sceneObjs->begin()+currentObjIndex);
-			// also remove from tree
-		}
+			if (sceneObjs->size()!=0){
+				deleteObj(currentObj->ID);
+			}
+			break;
+		case 'r':
+			SG = new SceneGraph();
+			nextChild = 0;
+			sceneObjs = new vector<SceneObj*>;
+			insertLight(light_pos0, amb0, diff0, spec0, 0);
+			insertLight(light_pos1, amb1, diff1, spec1, 1);
+			break;
 		case 9: // toggle selected object (temporary fix before ray picking is implemented)
 			currentObj = sceneObjs->at(currentObjIndex++%sceneObjs->size());
+			printf("ID= %i",currentObj->ID);
 			break;
 		default:
 			break;
 	}
 	glutPostRedisplay();
-}
-
-void deleteObj(int ID){
-	int index = -1;
-	for (int i=0; i<sceneObjs->size(); i++){
-		if (sceneObjs->at(i)->ID==ID){
-			index = i;
-			break;
-		}
-	}
-
 }
 
 void special(int key, int x, int y)
