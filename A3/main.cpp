@@ -15,9 +15,9 @@
 
 /*SCENE GRAPH:
 implement next:
-- deleting + reset
 - disable transforms on lights...
-- add 5 materials!
+- add 3 more materials!
+- add textures
 - draw indication of selection
 - load/save
 */
@@ -39,12 +39,12 @@ float angleX = 0;
 float angleY = 0;
 
 //lighting
-float light_pos0[] = {1,1,0,1.0};
+float light_pos0[] = {-2,2,0,1.0};
 float amb0[4] = {0.5,0.5,0.5,1};
 float diff0[4] = {1,1,1, 1};
 float spec0[4] = {1, 1, 1, 1};
 
-float light_pos1[] = {0,1,1,1.0};
+float light_pos1[] = {0,2,-2,1.0};
 float amb1[4] = {0,0,0,1};
 float diff1[4] = {0,1,1, 1};
 float spec1[4] = {1, 1, 1, 1};
@@ -89,6 +89,8 @@ string r = "rotate";
 string s = "scale";
 string transformMode = t;
 int mode = 0;
+
+
 
 //scene objects
 vector<SceneObj*> *sceneObjs = new vector<SceneObj*>;
@@ -213,7 +215,13 @@ void keyboard(unsigned char key, int x, int y)
 			insertObj(Sphere);
 			break;
 		case '3':
-			insertObj(Teapot);
+			insertObj(Cone);
+			break;
+		case '4':
+			insertObj(Torus);
+			break;
+		case '5':
+			insertObj(Dodecahedron);
 			break;
 		case 'a': //-x
 			if (sceneObjs->size()!=0){
@@ -341,15 +349,34 @@ void mouse(int button, int state, int x, int y){
 
 	//unproject values
 	double winX = (double)x; 
-	double winY = y - (double)y; 
+	double winY = viewport[3] - (double)y; 
 
-	//get point on near plan, set z value to 0
+	// get point on the 'near' plane (third param is set to 0.0)
 	gluUnProject(winX, winY, 0.0, matModelView, matProjection, 
-         viewport, &start[0], &start[1], &start[2]);
+         viewport, &start[0], &start[1], &start[2]); 
 
-	//get point on far plane, set z value to 1
-    gluUnProject(winX, winY, 1.0, matModelView, matProjection, 
+	// get point on the 'far' plane (third param is set to 1.0)
+	gluUnProject(winX, winY, 1.0, matModelView, matProjection, 
          viewport, &end[0], &end[1], &end[2]); 
+
+	printf("near point: %f,%f,%f\n", start[0], start[1], start[2]);
+	printf("far point: %f,%f,%f\n", end[0], end[1], end[2]);
+
+	//vicky trying stuff
+		vector<float> *intersections = new vector<float>;
+		for (int i = 0; i < sceneObjs->size(); ++i)
+		{	double intersection = sceneObjs->at(i)->box->intersects(start,end);
+			intersections->push_back(intersection); 
+		}
+
+		double closest;/// = <double>infinity();?
+		for (int i = 0; i < intersections->size(); ++i)
+		{	if (intersections->at(i)<closest) closest = intersections->at(i); 
+		}
+		//if closest != infinity set current obj to the closest intersect
+		//else do nothing
+		//endstuff
+
 	double R0x, R0y, R0z;
 	double Rdx, Rdy, Rdz;
 
@@ -393,8 +420,9 @@ void init(void)
 	glEnable(GL_LIGHTING);
 	//init our scenegraph
 	SG = new SceneGraph();
-	insertLight(light_pos0, amb0, diff0, spec0, 0);
 	insertLight(light_pos1, amb1, diff1, spec1, 1);
+	insertLight(light_pos0, amb0, diff0, spec0, 0);
+	
 
 }
 
@@ -526,7 +554,7 @@ int main(int argc, char** argv)
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
-	//glutMouseFunc(mouse);
+	glutMouseFunc(mouse);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);

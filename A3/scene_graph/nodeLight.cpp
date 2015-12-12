@@ -14,9 +14,9 @@ NodeLight::NodeLight(float* pos, float* amb, float* dif,  float* spec, int n){	/
 //which in this case means drawing the model
 void NodeLight::nodeSpecificCodeDown(){
 	glEnable(GL_LIGHT0 + this->lightNum);
-	glLightfv(GL_LIGHT0,GL_POSITION,this->position);
-	glLightfv(GL_LIGHT0,GL_AMBIENT,this->ambient);
-	glLightfv(GL_LIGHT0,GL_DIFFUSE,this->diffuse);
-	glLightfv(GL_LIGHT0,GL_SPECULAR,this->specular);
+	glLightfv(GL_LIGHT0 + this->lightNum,GL_POSITION,this->position);
+	glLightfv(GL_LIGHT0 + this->lightNum,GL_AMBIENT,this->ambient);
+	glLightfv(GL_LIGHT0 + this->lightNum,GL_DIFFUSE,this->diffuse);
+	glLightfv(GL_LIGHT0 + this->lightNum,GL_SPECULAR,this->specular);
 }
 

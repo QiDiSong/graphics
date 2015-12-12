@@ -14,13 +14,19 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 void NodeModel::nodeSpecificCodeDown(){
 	switch (modelType){
 	case Sphere:
-		glutSolidSphere(1, 100, 100);
+		glutSolidSphere(1, 50, 50);
 		break;
 	case Cube:
 		glutSolidCube(1);
 		break;
-	case Teapot:
-		glutSolidTeapot(1);
+	case Cone:
+		glutSolidCone(0.5,1,50,50);
+		break;
+	case Torus:
+		glutSolidTorus(0.5,0.5,50,50);
+		break;
+	case Dodecahedron:
+		glutSolidDodecahedron();
 		break;
 	case Lighting:
 		glutSolidSphere(0.5,50,50);

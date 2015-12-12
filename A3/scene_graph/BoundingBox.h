@@ -14,6 +14,7 @@ public:
 	~BoundingBox();
 
 	bool intersects(int x, int y);
+	double intersects(double* near, double* far);
 private:
 	Plane * top;
 	Plane * bottom;

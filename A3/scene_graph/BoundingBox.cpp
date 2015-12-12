@@ -19,3 +19,11 @@ BoundingBox::~BoundingBox() {
 bool BoundingBox::intersects(int x, int y) {
 
 }
+
+double BoundingBox::intersects(double* near, double* far){
+	//check each plane
+	//create a list of distances from each plane
+	//pick closest distance
+	//return this distance
+	//(distance will be HUGE_VALF if no intersection)
+}

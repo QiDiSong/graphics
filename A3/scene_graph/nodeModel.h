@@ -7,7 +7,9 @@
 enum ModelType{
 	Sphere,
 	Cube,
-	Teapot,
+	Cone,
+	Torus,
+	Dodecahedron,
 	Lighting,
 };
 
