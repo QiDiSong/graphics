@@ -52,12 +52,14 @@ void SceneObj::scale(float x, float y, float z){
 	scaleNode->amount3.x += x;
 	scaleNode->amount3.y += y;
 	scaleNode->amount3.z += z;
+	box->scale(x, y, z);
 }
 
 void SceneObj::translate(float x, float y, float z){
 	transNode->amount3.x += x;
 	transNode->amount3.y += y;
 	transNode->amount3.z += z;
+	box->translate(x, y, z);
 	if (modelNode->modelType==Lighting){
 		lightNode->position[0]+=x;
 		lightNode->position[1]+=y;

@@ -15,6 +15,8 @@ public:
 
 	bool intersects(int x, int y);
 	double intersects(double* near, double* far);
+	void translate(float x, float y, float z);
+	void scale(float x, float y, float z);
 private:
 	Plane * top;
 	Plane * bottom;

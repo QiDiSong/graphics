@@ -28,6 +28,7 @@ implement next:
  #include <math.h>
  #include <vector>
 #include <string>
+#include <limits>
 
 #include "scene_graph/structs.h"
 #include "scene_graph/sceneObj.cpp"
@@ -369,9 +370,16 @@ void mouse(int button, int state, int x, int y){
 			intersections->push_back(intersection); 
 		}
 
-		double closest;/// = <double>infinity();?
-		for (int i = 0; i < intersections->size(); ++i)
-		{	if (intersections->at(i)<closest) closest = intersections->at(i); 
+		double closest = std::numeric_limits<double>::infinity();
+		int closestIndex = intersections->size();
+		for (int i = 0; i < intersections->size(); ++i){
+			if (intersections->at(i)<closest){
+				closest = intersections->at(i);
+				closestIndex = i;
+			}
+		}
+		if (closestIndex != intersections->size()){
+			currentObj = sceneObjs->at(closestIndex);
 		}
 		//if closest != infinity set current obj to the closest intersect
 		//else do nothing
