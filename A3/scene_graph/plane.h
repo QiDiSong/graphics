@@ -13,6 +13,8 @@ public:
 	// double bottomStuff;
 	double t;
 	Point* intersectionPoint;
+	float distance;
+	float xDistance, yDistance, zDistance;
 
 	//contructor
 	Plane(Point a, Point e);
@@ -21,7 +23,7 @@ public:
 	~Plane();
 
 	//takes point to check
-	Point* intersects(double* nearPoint, double* farPoint);
+	Point* intersects(double* nearPoint, double* farPoint, Point low, Point high);
 };
 
 #endif

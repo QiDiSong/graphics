@@ -29,9 +29,12 @@ implement next:
  #include <vector>
 #include <string>
 #include <limits>
+#include <iostream>
 
 #include "scene_graph/structs.h"
 #include "scene_graph/sceneObj.cpp"
+//#include "scene_graph/plane.cpp"
+//#include "scene_graph/plane.h"
 
 //camera
 float pos[] = {0,1,0};
@@ -88,6 +91,8 @@ float nearPoint[] = {0,0,0};
 float farPoint[] = {1,1,1};
 
 double start[] ={0,0,0}, end[]={1,1,1};
+
+
 
 //node ids
 int masterID = 0;
@@ -390,8 +395,8 @@ void mouse(int button, int state, int x, int y){
 	gluUnProject(winX, winY, 1.0, matModelView, matProjection, 
          viewport, &end[0], &end[1], &end[2]);
 
-	printf("near point: %f,%f,%f\n", start[0], start[1], start[2]);
-	printf("far point: %f,%f,%f\n", end[0], end[1], end[2]);
+	//printf("near point: %f,%f,%f\n", start[0], start[1], start[2]);
+	//printf("far point: %f,%f,%f\n", end[0], end[1], end[2]);
 
 	//difference
 	end[0] = end[0] - start[0];
@@ -573,10 +578,9 @@ void display(void)
 	glPopMatrix();
 	glPushMatrix();
 	glTranslatef(farPoint[0], farPoint[1], farPoint[2]);
-	printf("%f, %f, %f\n", farPoint[0], farPoint[1], farPoint[2]);
+	//printf("%f, %f, %f\n", farPoint[0], farPoint[1], farPoint[2]);
 	glutSolidCube(1);
 	glPopMatrix();
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

@@ -27,6 +27,8 @@ void BoundingBox::translateBox(float x, float y, float z){
 	this->right = new Plane(Point(1.0, 0.0, 0.0), Point(size/2.0+x, 0.0, 0.0)); //x is positive
 	this->front = new Plane(Point(0.0, 0.0, -1.0), Point(0.0, 0.0, -(size/2.0)+z)); //z is negative
 	this->back = new Plane(Point(0.0, 0.0, 1.0), Point(0.0, 0.0, size/2.0+z)); //z is positive
+	this->low = Point(-size/2+x, -size/2+y, -size/2+z);
+	this->high = Point(size/2+x, size/2+y, size/2+z);
 }
 
 void BoundingBox::scaleBox(float x, float y, float z){
@@ -36,16 +38,18 @@ void BoundingBox::scaleBox(float x, float y, float z){
 	this->right = new Plane(Point(1.0, 0.0, 0.0), Point(size/2.0*x, 0.0, 0.0)); //x is positive
 	this->front = new Plane(Point(0.0, 0.0, -1.0), Point(0.0, 0.0, -(size/2.0)*z)); //z is negative
 	this->back = new Plane(Point(0.0, 0.0, 1.0), Point(0.0, 0.0, size/2.0*z)); //z is positive
+	this->low = Point(-size/2*x, -size/2*y, -size/2*z);
+	this->high = Point(size/2*x, size/2*y, size/2*z);
 }
 
 double BoundingBox::intersects(double* nearPoint, double* farPoint){
 	Point* intersections[6];
-	intersections[0] = top->intersects(nearPoint, farPoint);
-	intersections[1] = bottom->intersects(nearPoint, farPoint);
-	intersections[2] = left->intersects(nearPoint, farPoint);
-	intersections[3] = right->intersects(nearPoint, farPoint);
-	intersections[4] = back->intersects(nearPoint, farPoint);
-	intersections[5] = front->intersects(nearPoint, farPoint);
+	intersections[0] = top->intersects(nearPoint, farPoint, this->low, this->high);
+	intersections[1] = bottom->intersects(nearPoint, farPoint, this->low, this->high);
+	intersections[2] = left->intersects(nearPoint, farPoint, this->low, this->high);
+	intersections[3] = right->intersects(nearPoint, farPoint, this->low, this->high);
+	intersections[4] = back->intersects(nearPoint, farPoint, this->low, this->high);
+	intersections[5] = front->intersects(nearPoint, farPoint, this->low, this->high);
 	double closest = std::numeric_limits<double>::infinity();
 	double distance;
 	for (int i = 0; i < 6; i++){
