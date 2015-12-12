@@ -8,6 +8,13 @@ public:
 	int b;
 	int c;
 	int g;
+	bool result;
+	double topStuff;
+	double bottomStuff;
+	Point normal;
+	Point origin;
+	double t;
+	Point intersectionPoint;
 
 	//contructor
 	Plane(Point a, Point e);
@@ -16,7 +23,7 @@ public:
 	~Plane();
 
 	//takes point to check
-	bool intersects(Point p);
+	Point intersects(double* nearPoint, double* farPoint);
 };
 
 #endif
