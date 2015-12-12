@@ -364,7 +364,7 @@ void mouse(int button, int state, int x, int y){
 	printf("far point: %f,%f,%f\n", end[0], end[1], end[2]);
 
 	//vicky trying stuff
-		vector<float> *intersections = new vector<float>;
+		vector<float> *intersections = new vector<float>; //vector of intersection(distances)
 		for (int i = 0; i < sceneObjs->size(); ++i)
 		{	double intersection = sceneObjs->at(i)->box->intersects(start,end);
 			intersections->push_back(intersection); 

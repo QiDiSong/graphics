@@ -24,7 +24,7 @@ private:
 	Plane * right;
 	Plane * front;
 	Plane * back;
-	//int objectSize;
+	double size;
 };
 
 #endif
