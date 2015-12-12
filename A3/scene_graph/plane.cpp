@@ -1,13 +1,13 @@
 #include "plane.h"
 
-Plane::Plane(Point d, Point e) {
+Plane::Plane(Point normal, Point origin) {
 	//set first point as normal(a, b, c)
-	a = d.x;
-	b = d.y;
-	c = d.z;
+	a = normal.x;
+	b = normal.y;
+	c = normal.z;
 
 	//set second point as point(x, y, z)
-	g = -(d.x*e.x + d.y*e.y + d.z + e.z);
+	g = -(normal.x*origin.x + normal.y*origin.y + normal.z*origin.z);
 
 }
 
