@@ -1,13 +1,15 @@
 #include "plane.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 Plane::Plane(Point normal, Point origin) {
 	//set first point as normal(a, b, c)
-	a = normal.x;
-	b = normal.y;
-	c = normal.z;
+	this->a = normal.x;
+	this->b = normal.y;
+	this->c = normal.z;
 
 	//set second point as point(x, y, z)
-	g = -(normal.x*origin.x + normal.y*origin.y + normal.z*origin.z);
+	this->d = -(normal.x*origin.x + normal.y*origin.y + normal.z*origin.z);
 
 }
 
@@ -16,19 +18,25 @@ Plane::~Plane()
 
 }
 
-Point Plane::intersects(double* nearPoint, double* farPoint) {
-	bool result;
-	topStuff = -(normal.x*origin.x + normal.y*origin.y + normal.z*origin.z + g);
-	bottomStuff = (origin.x*farPoint[0] + origin.y*farPoint[1] + origin.z*farPoint[2]);
-	t = topStuff/bottomStuff;
-	if(t <= 0 || bottomStuff == 0) {
-		result = false;
+Point* Plane::intersects(double* nearPoint, double* farPoint) {
+	float t;
+	Point * intersectionPoint;
+	float topStuff = -(this->a*nearPoint[0] + this->b*nearPoint[1] + this->c*nearPoint[2] + d);
+	float bottomStuff = (this->a*(float)farPoint[0] + this->b*(float)farPoint[1] + this->c*(float)farPoint[2]);
+	if (bottomStuff==0){
+		printf("zero denominator \n");
+		return 0;
 	}
-	else {
-		result = true;
-	}
-	if(result) {
-		intersectionPoint = Point(nearPoint[0] + t*farPoint[0], nearPoint[1] + t*farPoint[1], nearPoint[2] + t*farPoint[2]);
-		return intersectionPoint;
+	else{
+		t = topStuff/bottomStuff;
+		if(t <= 0){return 0; printf("no intersection");}
+		else{
+			intersectionPoint = new Point((float)nearPoint[0] + t*(float)farPoint[0], (float)nearPoint[1] + t*(float)farPoint[1], (float)nearPoint[2] + t*(float)farPoint[2]);
+			if (intersectionPoint->x > -0.5 && intersectionPoint->x < 0.5 && intersectionPoint->y > -0.5 && intersectionPoint->y < 0.5){
+					printf("cube intersected front face!");
+			}
+			else printf("intersected plane \n");
+			return intersectionPoint;
+		}
 	}
 }

@@ -13,7 +13,7 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeTransform *scaleNode, N
 	this->rotNode = rotNode;
 	this->matNode = matNode;
 	this->modelNode = modelNode;
-	box = new BoundingBox(1);
+	this->box = new BoundingBox(1);
 
 	// switch (modelNode->modelType){
 	// case Sphere:
@@ -36,6 +36,7 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeLight *lightNode, NodeM
 	this->transNode = transNode;
 	this->modelNode = modelNode;
 	this->lightNode = lightNode;
+	this->box = new BoundingBox(1);
 }
 
 void SceneObj::changeMaterial(Material m){
@@ -52,14 +53,14 @@ void SceneObj::scale(float x, float y, float z){
 	scaleNode->amount3.x += x;
 	scaleNode->amount3.y += y;
 	scaleNode->amount3.z += z;
-	box->scale(x, y, z);
+	this->box->scaleBox(x, y, z);
 }
 
 void SceneObj::translate(float x, float y, float z){
 	transNode->amount3.x += x;
 	transNode->amount3.y += y;
 	transNode->amount3.z += z;
-	box->translate(x, y, z);
+	this->box->translateBox(x, y, z);
 	if (modelNode->modelType==Lighting){
 		lightNode->position[0]+=x;
 		lightNode->position[1]+=y;

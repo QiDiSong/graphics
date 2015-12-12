@@ -8,15 +8,15 @@
 class BoundingBox {
 public:
 	//constructor
-	BoundingBox(double size);
+	BoundingBox(float objectSize);
 
 	//destructor
 	~BoundingBox();
 
-	bool intersects(int x, int y);
-	double intersects(double* near, double* far);
-	void translate(float x, float y, float z);
-	void scale(float x, float y, float z);
+	void translateBox(float x, float y, float z);
+	void scaleBox(float x, float y, float z);
+	double intersects(double* nearPoint, double* farPoint);
+	
 private:
 	Plane * top;
 	Plane * bottom;
@@ -24,7 +24,7 @@ private:
 	Plane * right;
 	Plane * front;
 	Plane * back;
-	double size;
+	float size;
 };
 
 #endif

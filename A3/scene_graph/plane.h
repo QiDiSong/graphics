@@ -4,17 +4,15 @@
 
 class Plane {
 public:
-	int a;
-	int b;
-	int c;
-	int g;
-	bool result;
-	double topStuff;
-	double bottomStuff;
-	Point normal;
-	Point origin;
+	float a;
+	float b;
+	float c;
+	float d;
+	// bool result;
+	// double topStuff;
+	// double bottomStuff;
 	double t;
-	Point intersectionPoint;
+	Point* intersectionPoint;
 
 	//contructor
 	Plane(Point a, Point e);
@@ -23,7 +21,7 @@ public:
 	~Plane();
 
 	//takes point to check
-	Point intersects(double* nearPoint, double* farPoint);
+	Point* intersects(double* nearPoint, double* farPoint);
 };
 
 #endif

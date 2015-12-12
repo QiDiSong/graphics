@@ -69,6 +69,9 @@ float farPoint[] = {1,1,1};
 int mat = 0;
 Material curMat = m1;
 
+//ray picking?
+double start[] ={0,0,0}, end[]={1,1,1};
+
 //node ids
 int masterID = 0;
 int getID(){
@@ -339,10 +342,9 @@ void special(int key, int x, int y)
 
 void mouse(int button, int state, int x, int y){
 	if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN){
-			double matModelView[16], matProjection[16]; 
-	int viewport[4]; 
 
-		double start[] ={0,0,0}, end[]={1,1,1};
+	double matModelView[16], matProjection[16]; 
+	int viewport[4]; 
 
 	glGetDoublev(GL_MODELVIEW_MATRIX, matModelView); 
 	glGetDoublev(GL_PROJECTION_MATRIX, matProjection); 
@@ -358,10 +360,23 @@ void mouse(int button, int state, int x, int y){
 
 	// get point on the 'far' plane (third param is set to 1.0)
 	gluUnProject(winX, winY, 1.0, matModelView, matProjection, 
-         viewport, &end[0], &end[1], &end[2]); 
+         viewport, &end[0], &end[1], &end[2]);
 
 	printf("near point: %f,%f,%f\n", start[0], start[1], start[2]);
 	printf("far point: %f,%f,%f\n", end[0], end[1], end[2]);
+
+	//difference
+	end[0] = end[0] - start[0];
+	end[1] = end[1] - start[1];
+	end[2] = end[2] - start[2];
+
+	//magnitude!
+	double M = sqrt(end[0]*end[0] + end[1]*end[1] + end[2]*end[2]);
+
+	//unit vector!
+	end[0] /= M;
+	end[1] /= M;
+	end[2] /= M;
 
 	//vicky trying stuff
 		vector<float> *intersections = new vector<float>; //vector of intersection(distances)
@@ -370,46 +385,46 @@ void mouse(int button, int state, int x, int y){
 			intersections->push_back(intersection); 
 		}
 
-		double closest = std::numeric_limits<double>::infinity();
-		int closestIndex = intersections->size();
-		for (int i = 0; i < intersections->size(); ++i){
-			if (intersections->at(i)<closest){
-				closest = intersections->at(i);
-				closestIndex = i;
-			}
-		}
-		if (closestIndex != intersections->size()){
-			currentObj = sceneObjs->at(closestIndex);
-		}
+		// double closest = std::numeric_limits<double>::infinity();
+		// int closestIndex = intersections->size();
+		// for (int i = 0; i < intersections->size(); ++i){
+		// 	if (intersections->at(i)<closest){
+		// 		closest = intersections->at(i);
+		// 		closestIndex = i;
+		// 	}
+		// }
+		// if (closestIndex != intersections->size()){
+		// 	currentObj = sceneObjs->at(closestIndex);
+		// }
 		//if closest != infinity set current obj to the closest intersect
 		//else do nothing
 		//endstuff
 
-	double R0x, R0y, R0z;
-	double Rdx, Rdy, Rdz;
+	// double R0x, R0y, R0z;
+	// double end[0], end[1], end[2];
 
-	R0x = start[0];
-	R0y = start[1];
-	R0z = start[2];
+	// R0x = start[0];
+	// R0y = start[1];
+	// R0z = start[2];
 
-	Rdx = end[0] - start[0];
-	Rdy = end[1] - start[1];
-	Rdz = end[2] - start[2];
+	// end[0] = end[0] - start[0];
+	// end[1] = end[1] - start[1];
+	// end[2] = end[2] - start[2];
 
-	//magnitude
-	double M = sqrt(Rdx*Rdx + Rdy*Rdy + Rdz* Rdz);
+	// //magnitude
+	// double M = sqrt(end[0]*end[0] + end[1]*end[1] + end[2]* end[2]);
 
-	//unit vector
-	Rdx /= M;
-	Rdy /= M;
-	Rdz /= M;
-	nearPoint[0] = camPos[0];
-	nearPoint[1] = camPos[1];
-	nearPoint[2] = camPos[2];
+	// //unit vector
+	// end[0] /= M;
+	// end[1] /= M;
+	// end[2] /= M;
+	// nearPoint[0] = camPos[0];
+	// nearPoint[1] = camPos[1];
+	// nearPoint[2] = camPos[2];
 
-	farPoint[0] = Rdx;
-	farPoint[1] = Rdy;
-	farPoint[2] = Rdz;
+	// farPoint[0] = end[0];
+	// farPoint[1] = end[1];
+	// farPoint[2] = end[2];
 	}
 
 }
@@ -456,6 +471,8 @@ void drawText(){
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
+	glLoadIdentity();
+	gluPerspective(45, 1, 1, 100);
 	
 }
 
