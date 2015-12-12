@@ -32,10 +32,7 @@ Point* Plane::intersects(double* nearPoint, double* farPoint) {
 		if(t <= 0){return 0; printf("no intersection");}
 		else{
 			intersectionPoint = new Point((float)nearPoint[0] + t*(float)farPoint[0], (float)nearPoint[1] + t*(float)farPoint[1], (float)nearPoint[2] + t*(float)farPoint[2]);
-			if (intersectionPoint->x > -0.5 && intersectionPoint->x < 0.5 && intersectionPoint->y > -0.5 && intersectionPoint->y < 0.5){
-					printf("cube intersected front face!");
-			}
-			else printf("intersected plane \n");
+			printf("intersected plane \n");
 			return intersectionPoint;
 		}
 	}

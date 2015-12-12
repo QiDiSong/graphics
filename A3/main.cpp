@@ -40,12 +40,12 @@ float angleX = 0;
 float angleY = 0;
 
 //lighting
-float light_pos0[] = {-2,2,0,1.0};
+float light_pos0[] = {5,5,2,1.0};
 float amb0[4] = {0.5,0.5,0.5,1};
 float diff0[4] = {1,1,1, 1};
 float spec0[4] = {1, 1, 1, 1};
 
-float light_pos1[] = {0,2,-2,1.0};
+float light_pos1[] = {2,5,5,1.0};
 float amb1[4] = {0,0,0,1};
 float diff1[4] = {0,1,1, 1};
 float spec1[4] = {1, 1, 1, 1};
@@ -63,13 +63,30 @@ float emSpec[] = {	0.633,	0.727811,	0.633,1};
 float emShiny = 0.6*128;
 Material m2 = Material (emAmb, emDif, emSpec, emShiny);
 
-float nearPoint[] = {0,0,0};
-float farPoint[] = {1,1,1};
+float gAmb[] = {2150.24725, 	0.1995, 	0.0745, 1.0};
+float gDif[] = {0.75164, 	0.60648, 	0.22648,1};
+float gSpec[] = {0.628281, 	0.555802, 	0.366065,1};
+float gShiny = 0.4*128;
+Material m3 = Material(gAmb, gDif, gSpec, gShiny);
 
-int mat = 0;
+float pAmb[] = {2150.24725, 	0.1995, 	0.0745, 1.0};
+float pDif[] = {0.75164, 	0.60648, 	0.22648,1};
+float pSpec[] = {0.628281, 	0.555802, 	0.366065,1};
+float pShiny = 0.4*128;
+Material m4 = Material(pAmb, pDif, pSpec, pShiny);
+
+float gAmb[] = {2150.24725, 	0.1995, 	0.0745, 1.0};
+float gDif[] = {0.75164, 	0.60648, 	0.22648,1};
+float gSpec[] = {0.628281, 	0.555802, 	0.366065,1};
+float gShiny = 0.4*128;
+Material m5 = Material(gAmb, gDif, gSpec, gShiny);
+
 Material curMat = m1;
 
 //ray picking?
+float nearPoint[] = {0,0,0};
+float farPoint[] = {1,1,1};
+
 double start[] ={0,0,0}, end[]={1,1,1};
 
 //node ids
@@ -93,7 +110,6 @@ string r = "rotate";
 string s = "scale";
 string transformMode = t;
 int mode = 0;
-
 
 
 //scene objects
@@ -212,19 +228,19 @@ void keyboard(unsigned char key, int x, int y)
 		case 27:
 			exit (0);
 			break;
-		case '1': 
+		case 'y': 
 			insertObj(Cube);
 			break;
-		case '2':
+		case 'u':
 			insertObj(Sphere);
 			break;
-		case '3':
+		case 'i':
 			insertObj(Cone);
 			break;
-		case '4':
+		case 'o':
 			insertObj(Torus);
 			break;
-		case '5':
+		case 'p':
 			insertObj(Dodecahedron);
 			break;
 		case 'a': //-x
@@ -271,10 +287,22 @@ void keyboard(unsigned char key, int x, int y)
 			if (mode%3==1) transformMode = s;
 			if (mode%3==2) transformMode = r;
 			break;
+		case '1':
+			curMat = m1;
+			break;
+		case '2':
+			curMat = m2;
+			break;
+		case '3':
+			curMat = m3;
+			break;
+		case '4':
+			//curMat = m4;
+			break;
+		case '5':
+			//curMat = m5;
+			break;
 		case 'm':
-			mat++;
-			if (mat%2==0) curMat = m1;
-			if (mat%2==1) curMat = m2;
 			currentObj->changeMaterial(curMat);
 			break;
 		case 'x':
@@ -377,6 +405,13 @@ void mouse(int button, int state, int x, int y){
 	end[0] /= M;
 	end[1] /= M;
 	end[2] /= M;
+
+	//vicky trying the slab method
+		// for (int i = 0; i < sceneObjs->size(); ++i)
+		// {	bool intersection = sceneObjs->at(i)->box->slab(start,end);
+		// 	if(intersection) printf("object %i intersected! \n",i);
+		// 	else printf("no intersection :( \n");
+		// }
 
 	//vicky trying stuff
 		vector<float> *intersections = new vector<float>; //vector of intersection(distances)

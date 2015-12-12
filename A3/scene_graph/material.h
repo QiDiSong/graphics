@@ -15,6 +15,8 @@ public:
 	float* diffuse;
 	float* specular;
 	float shine;
+	void greyPlastic();
+	void emerald();
 };
 
 void setMaterial(Material m);
