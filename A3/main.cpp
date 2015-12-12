@@ -69,17 +69,17 @@ float gSpec[] = {0.628281, 	0.555802, 	0.366065,1};
 float gShiny = 0.4*128;
 Material m3 = Material(gAmb, gDif, gSpec, gShiny);
 
-float pAmb[] = {2150.24725, 	0.1995, 	0.0745, 1.0};
-float pDif[] = {0.75164, 	0.60648, 	0.22648,1};
-float pSpec[] = {0.628281, 	0.555802, 	0.366065,1};
-float pShiny = 0.4*128;
-Material m4 = Material(pAmb, pDif, pSpec, pShiny);
+// float pAmb[] = {2150.24725, 	0.1995, 	0.0745, 1.0};
+// float pDif[] = {0.75164, 	0.60648, 	0.22648,1};
+// float pSpec[] = {0.628281, 	0.555802, 	0.366065,1};
+// float pShiny = 0.4*128;
+// Material m4 = Material(pAmb, pDif, pSpec, pShiny);
 
-float gAmb[] = {2150.24725, 	0.1995, 	0.0745, 1.0};
-float gDif[] = {0.75164, 	0.60648, 	0.22648,1};
-float gSpec[] = {0.628281, 	0.555802, 	0.366065,1};
-float gShiny = 0.4*128;
-Material m5 = Material(gAmb, gDif, gSpec, gShiny);
+// float gAmb[] = {2150.24725, 	0.1995, 	0.0745, 1.0};
+// float gDif[] = {0.75164, 	0.60648, 	0.22648,1};
+// float gSpec[] = {0.628281, 	0.555802, 	0.366065,1};
+// float gShiny = 0.4*128;
+// Material m5 = Material(gAmb, gDif, gSpec, gShiny);
 
 Material curMat = m1;
 
