@@ -3,6 +3,9 @@
 
 #include "node.h"
 #include <gl/glut.h>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 enum ModelType{
 	Sphere,
@@ -20,6 +23,7 @@ public:
 	NodeModel(ModelType whatType);	//constructor
 
 	virtual void nodeSpecificCodeDown();
+	virtual void saveNode(ofstream& file);
 
 	ModelType modelType;
 	//BoundingBox box;

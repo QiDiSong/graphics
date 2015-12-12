@@ -1,6 +1,9 @@
 #include "nodeLight.h"
 #include <stdio.h> //needed for printf command
 #include <gl\glut.h>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 NodeLight::NodeLight(float* pos, float* amb, float* dif,  float* spec, int n){	//constructor
 	this->position = pos;
@@ -20,3 +23,13 @@ void NodeLight::nodeSpecificCodeDown(){
 	glLightfv(GL_LIGHT0 + this->lightNum,GL_SPECULAR,this->specular);
 }
 
+void NodeLight::saveNode(ofstream& file){
+	file << "light,";
+	if (this->children->size()==0){
+		file << endl;
+		return;
+	}
+	for (int i=0; i<this->children->size();i++){
+		this->children->at(i)->saveNode(file);
+	}
+}

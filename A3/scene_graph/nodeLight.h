@@ -3,6 +3,9 @@
 
 #include "node.h"
 #include <gl/glut.h>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 class NodeLight:public Node{
 public:
@@ -14,6 +17,7 @@ public:
 	int lightNum;
 
 	virtual void nodeSpecificCodeDown();
+	virtual void saveNode(ofstream& file);
 };
 
 #endif

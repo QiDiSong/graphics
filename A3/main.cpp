@@ -16,7 +16,6 @@
 /*SCENE GRAPH:
 implement next:
 - disable transforms on lights...
-- add 3 more materials!
 - add textures
 - draw indication of selection
 - load/save
@@ -69,19 +68,25 @@ float gSpec[] = {0.628281, 	0.555802, 	0.366065,1};
 float gShiny = 0.4*128;
 Material m3 = Material(gAmb, gDif, gSpec, gShiny);
 
-// float pAmb[] = {2150.24725, 	0.1995, 	0.0745, 1.0};
-// float pDif[] = {0.75164, 	0.60648, 	0.22648,1};
-// float pSpec[] = {0.628281, 	0.555802, 	0.366065,1};
-// float pShiny = 0.4*128;
-// Material m4 = Material(pAmb, pDif, pSpec, pShiny);
+float pAmb[] =  {0.25, 	0.20725, 	0.20725, 1.0};
+float pDif[] = {1, 	0.829, 	0.829,1};
+float pSpec[] = {0.296648, 	0.296648, 	0.296648,1};
+float pShiny =  0.088*128;
+Material m4 = Material(pAmb, pDif, pSpec, pShiny);
 
-// float gAmb[] = {2150.24725, 	0.1995, 	0.0745, 1.0};
-// float gDif[] = {0.75164, 	0.60648, 	0.22648,1};
-// float gSpec[] = {0.628281, 	0.555802, 	0.366065,1};
-// float gShiny = 0.4*128;
-// Material m5 = Material(gAmb, gDif, gSpec, gShiny);
+float rAmb[] = {0.0, 	0.0, 	0.0, 1.0};
+float rDif[] = {0.5, 	0.0, 	0.0,1};
+float rSpec[] = { 0.7, 	0.6, 	0.6,1};
+float rShiny = .25*128;
+Material m5 = Material(rAmb, rDif, rSpec, rShiny);
 
 Material curMat = m1;
+
+/* TEXTURES */
+
+GLubyte* image;
+GLubyte* marble;
+int width,height,max;
 
 //ray picking?
 float nearPoint[] = {0,0,0};
@@ -287,6 +292,9 @@ void keyboard(unsigned char key, int x, int y)
 			if (mode%3==1) transformMode = s;
 			if (mode%3==2) transformMode = r;
 			break;
+		case '0':
+			SG->save();
+			break;
 		case '1':
 			curMat = m1;
 			break;
@@ -297,10 +305,10 @@ void keyboard(unsigned char key, int x, int y)
 			curMat = m3;
 			break;
 		case '4':
-			//curMat = m4;
+			curMat = m4;
 			break;
 		case '5':
-			//curMat = m5;
+			curMat = m5;
 			break;
 		case 'm':
 			currentObj->changeMaterial(curMat);

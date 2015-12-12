@@ -6,6 +6,8 @@
 //Nodes
 
 #include <vector>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 extern int getID();
@@ -34,6 +36,7 @@ public:
 	void draw();
 	virtual void nodeSpecificCodeDown();
 	virtual void nodeSpecificCodeUp();
+	virtual void saveNode(ofstream& file);
 };
 
 #endif

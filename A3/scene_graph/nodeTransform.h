@@ -3,6 +3,10 @@
 
 #include "node.h"
 #include "structs.h"
+#include <iostream>
+#include <fstream>
+using namespace std;
+
 enum transformType{
 	Translate,
 	Rotate,
@@ -19,6 +23,7 @@ public:
 	Vector4D amount4;
 
 	virtual void nodeSpecificCodeDown();
+	virtual void saveNode(ofstream& file);
 };
 
 #endif

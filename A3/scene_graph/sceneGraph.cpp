@@ -1,6 +1,9 @@
 #include "sceneGraph.h"
 #include "node.h"
 #include <stdio.h>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 SceneGraph::SceneGraph(){
 	rootNode = new Node();
@@ -77,6 +80,11 @@ void SceneGraph::draw(){
 	rootNode->draw();
 }
 
-// void SceneGraph::save(){
-// 	rootNode->save();
-// }
+void SceneGraph::save(){
+	ofstream outfile("scene.txt");
+	outfile << "my text here!" << endl;
+	for (int i = 0; i < rootNode->children->size(); i++){
+		rootNode->children->at(i)->saveNode(outfile);
+	}
+	outfile.close();
+}

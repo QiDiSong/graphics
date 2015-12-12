@@ -41,3 +41,5 @@ void Node::nodeSpecificCodeDown(){}
 
 //code where we add what the node will do when moving up the tree
 void Node::nodeSpecificCodeUp(){}
+
+void Node::saveNode(ofstream& file){};

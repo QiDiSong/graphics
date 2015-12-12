@@ -1,6 +1,8 @@
 #include "nodeMaterial.h"
 #include <stdio.h> //needed for printf command
 #include <gl\glut.h>
+#include <iostream>
+#include <fstream>
 
 NodeMaterial::NodeMaterial(Material m){	//constructor
 	this->nodeType = material;
@@ -17,3 +19,13 @@ void NodeMaterial::nodeSpecificCodeDown(){
 	// glMaterialf(GL_FRONT, GL_SHININESS, mat.shine);
 }
 
+void NodeMaterial::saveNode(ofstream& file){
+	file << "mat,";
+	if (this->children->size()==0){
+		file << endl;
+		return;
+	}
+	for (int i=0; i<this->children->size();i++){
+		this->children->at(i)->saveNode(file);
+	}
+}

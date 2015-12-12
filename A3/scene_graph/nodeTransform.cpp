@@ -1,6 +1,8 @@
 #include "nodeTransform.h"
 #include <stdio.h> //needed for printf command
 #include <gl/glut.h>
+#include <iostream>
+#include <fstream>
 
 //for gltranslate and gl scale
 NodeTransform::NodeTransform(transformType whatType, Vector3D vec3){
@@ -23,5 +25,15 @@ void NodeTransform::nodeSpecificCodeDown(){
 	case Scale:
 		glScalef(amount3.x, amount3.y, amount3.z);
 		break;
+	}
+}
+void NodeTransform::saveNode(ofstream& file){
+	file << "transform,";
+	if (this->children->size()==0){
+		file << endl;
+		return;
+	}
+	for (int i=0; i<this->children->size();i++){
+		this->children->at(i)->saveNode(file);
 	}
 }

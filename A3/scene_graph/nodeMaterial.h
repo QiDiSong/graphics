@@ -4,6 +4,9 @@
 #include "node.h"
 #include "material.cpp"
 #include <gl/glut.h>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 class NodeMaterial:public Node{
 public:
@@ -11,6 +14,7 @@ public:
 	Material mat;
 
 	virtual void nodeSpecificCodeDown();
+	virtual void saveNode(ofstream& file);
 };
 
 #endif

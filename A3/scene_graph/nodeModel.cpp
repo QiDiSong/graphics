@@ -2,6 +2,8 @@
 #include "Point.h"
 #include <stdio.h> //needed for printf command
 #include <gl\glut.h>
+#include <iostream>
+#include <fstream>
 
 NodeModel::NodeModel(ModelType whatType){	//constructor
 	nodeType = model;
@@ -31,5 +33,16 @@ void NodeModel::nodeSpecificCodeDown(){
 	case Lighting:
 		glutSolidSphere(0.5,50,50);
 		break;
+	}
+}
+
+void NodeModel::saveNode(ofstream& file){
+	file << "model,";
+	if (this->children->size()==0){
+		file << endl;
+		return;
+	}
+	for (int i=0; i<this->children->size();i++){
+		this->children->at(i)->saveNode(file);
 	}
 }
