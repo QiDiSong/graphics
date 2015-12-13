@@ -15,7 +15,7 @@ public:
 
 	void translateBox(float x, float y, float z);
 	void scaleBox(float x, float y, float z);
-	double intersects(double* nearPoint, double* farPoint);
+	float intersects(double* nearPoint, double* farPoint);
 	bool slab(double* p0, double* pd);
 	bool slab(double a0d, double add, float al, float ah);
 	

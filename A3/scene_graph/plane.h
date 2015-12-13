@@ -8,11 +8,8 @@ public:
 	float b;
 	float c;
 	float d;
-	// bool result;
-	// double topStuff;
-	// double bottomStuff;
+
 	double t;
-	Point* intersectionPoint;
 
 	//contructor
 	Plane(Point a, Point e);
@@ -21,7 +18,7 @@ public:
 	~Plane();
 
 	//takes point to check
-	Point* intersects(double* nearPoint, double* farPoint);
+	float intersects(double* nearPoint, double* farPoint, Point low, Point high);
 };
 
 #endif

@@ -37,7 +37,27 @@ void NodeModel::nodeSpecificCodeDown(){
 }
 
 void NodeModel::saveNode(ofstream& file){
-	file << "model,";
+	file << "m";
+	switch (modelType){
+	case Sphere:
+		file << "s,";
+		break;
+	case Cube:
+		file << "C,";
+		break;
+	case Cone:
+		file << "c,";
+		break;
+	case Torus:
+		file << "t,";
+		break;
+	case Dodecahedron:
+		file << "d,";
+		break;
+	case Lighting:
+		file << "l,";
+		break;
+	}
 	if (this->children->size()==0){
 		file << endl;
 		return;

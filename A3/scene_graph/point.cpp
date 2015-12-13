@@ -14,6 +14,12 @@ Point::Point(float x, float y, float z){
 	this->z = z;
 }
 
+void Point::add(Point a){
+	this->x += a.x;
+	this->y += a.y;
+	this->z += a.z;
+}
+
 //print method
 void Point::print(){
 	printf("point= (%f, %f, %f) \n",this->x,this->y,this->z);

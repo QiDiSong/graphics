@@ -28,6 +28,7 @@ implement next:
  #include <vector>
 #include <string>
 #include <limits>
+#include <iostream>
 
 #include "scene_graph/structs.h"
 #include "scene_graph/sceneObj.cpp"
@@ -93,6 +94,8 @@ float nearPoint[] = {0,0,0};
 float farPoint[] = {1,1,1};
 
 double start[] ={0,0,0}, end[]={1,1,1};
+
+
 
 //node ids
 int masterID = 0;
@@ -208,6 +211,7 @@ void insertLight(float pos[4], float amb[4], float dif[4], float spec[4], int n)
 	SceneObj* newObj = new SceneObj(groupID, trNode, lightNode, modelNode);
 	sceneObjs->push_back(newObj);
 	currentObj = newObj;
+	//newObj->translate(temp3.x, temp3.y, temp3.z);
 }
 
 void deleteObj(int ID){
@@ -398,8 +402,8 @@ void mouse(int button, int state, int x, int y){
 	gluUnProject(winX, winY, 1.0, matModelView, matProjection, 
          viewport, &end[0], &end[1], &end[2]);
 
-	printf("near point: %f,%f,%f\n", start[0], start[1], start[2]);
-	printf("far point: %f,%f,%f\n", end[0], end[1], end[2]);
+	//printf("near point: %f,%f,%f\n", start[0], start[1], start[2]);
+	//printf("far point: %f,%f,%f\n", end[0], end[1], end[2]);
 
 	//difference
 	end[0] = end[0] - start[0];
@@ -424,50 +428,26 @@ void mouse(int button, int state, int x, int y){
 	//vicky trying stuff
 		vector<float> *intersections = new vector<float>; //vector of intersection(distances)
 		for (int i = 0; i < sceneObjs->size(); ++i)
-		{	double intersection = sceneObjs->at(i)->box->intersects(start,end);
+		{	float intersection = sceneObjs->at(i)->box->intersects(start,end);
 			intersections->push_back(intersection); 
 		}
-
-		// double closest = std::numeric_limits<double>::infinity();
-		// int closestIndex = intersections->size();
-		// for (int i = 0; i < intersections->size(); ++i){
-		// 	if (intersections->at(i)<closest){
-		// 		closest = intersections->at(i);
-		// 		closestIndex = i;
-		// 	}
-		// }
-		// if (closestIndex != intersections->size()){
-		// 	currentObj = sceneObjs->at(closestIndex);
-		// }
+		double t;
+		double closest = std::numeric_limits<double>::infinity();
+		int closestIndex = intersections->size();
+		for (int i = 0; i < intersections->size(); ++i){
+			t = intersections->at(i);
+			printf("checking obj %i, t is %f \n", i, t);
+			if (t<closest){
+				closest = intersections->at(i);
+				closestIndex = i;
+			}
+		}
+		if (closestIndex < intersections->size()){
+			currentObj = sceneObjs->at(closestIndex);
+		}
 		//if closest != infinity set current obj to the closest intersect
 		//else do nothing
 		//endstuff
-
-	// double R0x, R0y, R0z;
-	// double end[0], end[1], end[2];
-
-	// R0x = start[0];
-	// R0y = start[1];
-	// R0z = start[2];
-
-	// end[0] = end[0] - start[0];
-	// end[1] = end[1] - start[1];
-	// end[2] = end[2] - start[2];
-
-	// //magnitude
-	// double M = sqrt(end[0]*end[0] + end[1]*end[1] + end[2]* end[2]);
-
-	// //unit vector
-	// end[0] /= M;
-	// end[1] /= M;
-	// end[2] /= M;
-	// nearPoint[0] = camPos[0];
-	// nearPoint[1] = camPos[1];
-	// nearPoint[2] = camPos[2];
-
-	// farPoint[0] = end[0];
-	// farPoint[1] = end[1];
-	// farPoint[2] = end[2];
 	}
 
 }
@@ -581,10 +561,9 @@ void display(void)
 	glPopMatrix();
 	glPushMatrix();
 	glTranslatef(farPoint[0], farPoint[1], farPoint[2]);
-	printf("%f, %f, %f\n", farPoint[0], farPoint[1], farPoint[2]);
+	//printf("%f, %f, %f\n", farPoint[0], farPoint[1], farPoint[2]);
 	glutSolidCube(1);
 	glPopMatrix();
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

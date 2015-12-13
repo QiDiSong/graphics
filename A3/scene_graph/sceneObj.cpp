@@ -36,7 +36,27 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeLight *lightNode, NodeM
 	this->transNode = transNode;
 	this->modelNode = modelNode;
 	this->lightNode = lightNode;
-	this->box = new BoundingBox(1);
+	switch (modelNode->modelType){
+	case Sphere:
+		this->box = new BoundingBox(4);
+		break;
+	case Cube:
+		this->box = new BoundingBox(2);
+		break;
+	case Cone:
+		this->box = new BoundingBox(2);
+		break;
+	case Torus:
+		this->box = new BoundingBox(2);
+		break;
+	case Dodecahedron:
+		this->box = new BoundingBox(6);
+		break;
+	case Lighting:
+		this->box = new BoundingBox(2);
+		this->box->translateBox(this->lightNode->position[0],this->lightNode->position[1],this->lightNode->position[2]);
+		break;
+	}
 }
 
 void SceneObj::changeMaterial(Material m){

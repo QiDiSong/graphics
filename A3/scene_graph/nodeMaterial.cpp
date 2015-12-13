@@ -13,14 +13,10 @@ NodeMaterial::NodeMaterial(Material m){	//constructor
 //which in this case means drawing the model
 void NodeMaterial::nodeSpecificCodeDown(){
 	setMaterial(this->mat);
-	// glMaterialfv(GL_FRONT, GL_AMBIENT, mat.ambient);
-	// glMaterialfv(GL_FRONT, GL_DIFFUSE, mat.diffuse);
-	// glMaterialfv(GL_FRONT, GL_SPECULAR, mat.specular);
-	// glMaterialf(GL_FRONT, GL_SHININESS, mat.shine);
 }
 
 void NodeMaterial::saveNode(ofstream& file){
-	file << "mat,";
+	file << "M,";
 	if (this->children->size()==0){
 		file << endl;
 		return;

@@ -24,7 +24,7 @@ void NodeLight::nodeSpecificCodeDown(){
 }
 
 void NodeLight::saveNode(ofstream& file){
-	file << "light,";
+	file << "l";
 	if (this->children->size()==0){
 		file << endl;
 		return;

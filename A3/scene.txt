@@ -1,6 +1,5 @@
 my text here!
-g,light,transform,model,
-g,light,transform,model,
-g,transform,transform,transform,mat,model,
-g,transform,transform,transform,mat,model,
-g,transform,transform,transform,mat,model,
+g,ltt255,ml,
+g,ltt552,ml,
+g,tt01.70,tr000,ts111,M,mc,
+g,tt000,tr000,ts111,M,mt,

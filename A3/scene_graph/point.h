@@ -10,6 +10,7 @@ public:
 	float y;
 	float z;
 	void print();
+	void add(Point a);
 };
 
 #endif
