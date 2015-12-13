@@ -1,4 +1,5 @@
 /*SIMPLE 3D MODELLER
+Assignment 3 for COMP SCI 3GC3
 Vicky Bilbily bilbilv 1317465
 Lucas Bongers bongerlj 1202472
 */
@@ -93,6 +94,8 @@ int mode = 0;
 //scene objects
 vector<SceneObj*> *sceneObjs = new vector<SceneObj*>;
 
+
+//print instructions to terminal
 void instructions(){
 	printf("\n\nHI NOEL OR THOMAS! Welcome to ~The Simple 3D Modeler~ \n"
 		"(by Vicky Bilbily 1317465 and Lucas Bongers 1202472) \n\n"
@@ -110,21 +113,24 @@ void instructions(){
 		"right-click - delete object \n"
 		"x - delete currently selected object \n"
 		"r - clear all objects in scene \n"
-		"1-5 toggle current material \n"
+		"1-5 - toggle current material \n"
 		"m - set selected object to current material \n"
 		"t - toggle transform mode (written in bottom-left corner of scene) \n"
 		"aswd(qe) - transform selected object in all directions \n"
-		"space - save scene to txt \n"
-		"CTRL + space - load scene \n"
+		"space - save scene to txt (give name in terminal) \n"
+		"CTRL + space - load scene (give name in terminal) \n"
+		"*WARNING* loading doesn't fully work yet, currently crashes the program... \n"
+		"esc - exit \n"
 
-		"\n\n Extra: you can ray-pick the lights! \n"
+		"\nExtra feature: you can ray-pick the lights \n"
 		);
-
 }
+
+//insert an object into the scene
 void insertObj(ModelType type){
 	SG->goToRoot();
 
-	//scale node
+	//temp for passing default values to nodes
 	Vector3D temp3;
 
 	//insert group node at root
@@ -150,6 +156,7 @@ void insertObj(ModelType type){
 	SG->insertChildNodeHere(rotNode);
 	SG->goToChild(0);
 
+	//should be 1 for scale
 	temp3.x = 1;
 	temp3.y = 1;
 	temp3.z = 1;
@@ -177,10 +184,11 @@ void insertObj(ModelType type){
 	currentObjIndex = sceneObjs->size()-1;
 }
 
+//insert light into the scene
 void insertLight(float pos[4], float amb[4], float dif[4], float spec[4], int n){
 	SG->goToRoot();
 
-	//scale node
+	//temp for passing values to nodes
 	Vector3D temp3;
 	temp3.x = pos[0];
 	temp3.y = pos[1];
@@ -215,6 +223,7 @@ void insertLight(float pos[4], float amb[4], float dif[4], float spec[4], int n)
 	currentObj = newObj;
 }
 
+//delete object of given ID
 void deleteObj(int ID){
 	SG->deleteChildByID(ID);
 	int index = -1;
@@ -237,6 +246,7 @@ void keyboard(unsigned char key, int x, int y)
 		case 27:
 			exit (0);
 			break;
+		//draw objects
 		case 'y': 
 			insertObj(Cube);
 			break;
@@ -252,6 +262,7 @@ void keyboard(unsigned char key, int x, int y)
 		case 'p':
 			insertObj(Teapot);
 			break;
+		//transformations
 		case 'a': //-x
 			if (sceneObjs->size()!=0){
 				if (mode%3==0) currentObj->translate(-0.1, 0, 0);
@@ -296,9 +307,16 @@ void keyboard(unsigned char key, int x, int y)
 			if (mode%3==1) transformMode = s;
 			if (mode%3==2) transformMode = r;
 			break;
-		case '0':
-			SG->save();
+		case 32: //load/save
+			if (glutGetModifiers()==GLUT_ACTIVE_CTRL){
+				sceneObjs = SG->load();
+				nextChild = sceneObjs->size();
+				currentObj = sceneObjs->at(0);
+				currentObj->select();
+			}
+			else SG->save();
 			break;
+		//toggle materials
 		case '1':
 			curMat = m1;
 			break;
@@ -314,14 +332,17 @@ void keyboard(unsigned char key, int x, int y)
 		case '5':
 			curMat = m5;
 			break;
+		//change selected object's material to current material
 		case 'm':
-			currentObj->changeMaterial(curMat);
+			if (!currentObj->isLight) currentObj->changeMaterial(curMat);
 			break;
+		//delete selected object
 		case 'x':
 			if (sceneObjs->size()!=0){
 				deleteObj(currentObj->ID);
 			}
 			break;
+		//reset scene
 		case 'r':
 			SG = new SceneGraph();
 			nextChild = 0;
@@ -329,7 +350,7 @@ void keyboard(unsigned char key, int x, int y)
 			insertLight(light_pos0, amb0, diff0, spec0, 0);
 			insertLight(light_pos1, amb1, diff1, spec1, 1);
 			break;
-		case 9: // toggle selected object (temporary fix before ray picking is implemented)
+		case 9: // toggle selected object (was used before ray picking implemented, still useful anyway)
 			currentObj->unselect();
 			currentObj = sceneObjs->at(currentObjIndex++%sceneObjs->size());
 			currentObj->select();
@@ -343,6 +364,7 @@ void keyboard(unsigned char key, int x, int y)
 void special(int key, int x, int y)
 {
 	/* arrow key presses move the camera */
+	//use CTRL modifier to rotate scene
 	switch(key)
 	{
 
@@ -381,8 +403,10 @@ void special(int key, int x, int y)
 	glutPostRedisplay();
 }
 
+//ray picking via mouse function!
 void mouse(int button, int state, int x, int y){
 	
+	//grab matrices
 	double matModelView[16], matProjection[16]; 
 	int viewport[4]; 
 
@@ -394,11 +418,11 @@ void mouse(int button, int state, int x, int y){
 	double winX = (double)x; 
 	double winY = viewport[3] - (double)y; 
 
-	// get point on the 'near' plane (third param is set to 0.0)
+	// get point on the 'near' plane 
 	gluUnProject(winX, winY, 0.0, matModelView, matProjection, 
          viewport, &start[0], &start[1], &start[2]); 
 
-	// get point on the 'far' plane (third param is set to 1.0)
+	// get point on the 'far' plane
 	gluUnProject(winX, winY, 1.0, matModelView, matProjection, 
          viewport, &end[0], &end[1], &end[2]);
 
@@ -407,30 +431,34 @@ void mouse(int button, int state, int x, int y){
 	end[1] = end[1] - start[1];
 	end[2] = end[2] - start[2];
 
-	//magnitude!
+	//magnitude
 	double M = sqrt(end[0]*end[0] + end[1]*end[1] + end[2]*end[2]);
 
-	//unit vector!
+	//unit vector
 	end[0] /= M;
 	end[1] /= M;
 	end[2] /= M;
 
-		vector<double> *intersections = new vector<double>; //vector of intersection(distances)
-		for (int i = 0; i < sceneObjs->size(); ++i)
-		{	double intersection = sceneObjs->at(i)->box->slab(start,end);
-			intersections->insert(intersections->begin()+i, intersection); 
+	//list of intersection distances
+	vector<double> *intersections = new vector<double>;
+	//find the relative distance for each object in scene
+	for (int i = 0; i < sceneObjs->size(); ++i)
+	{	double intersection = sceneObjs->at(i)->box->slab(start,end);
+		intersections->insert(intersections->begin()+i, intersection); 
+	}
+
+	//compare these distances
+	double t;
+	double closest = std::numeric_limits<double>::infinity();
+	int closestIndex = -1;
+	for (int i = 0; i < intersections->size(); ++i){
+		t = intersections->at(i);
+		if (t<closest && t>0){
+			closest = t;
+			closestIndex = i;
 		}
-		double t;
-		double closest = std::numeric_limits<double>::infinity();
-		int closestIndex = -1;
-		for (int i = 0; i < intersections->size(); ++i){
-			t = intersections->at(i);
-			if (t<closest && t>0){
-				closest = t;
-				closestIndex = i;
-			}
-		}
-		//select closest object, if any
+	}
+	//select closest intersected object, if any
 	if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN){
 		if (closestIndex > -1){
 			currentObj->unselect();
@@ -438,6 +466,7 @@ void mouse(int button, int state, int x, int y){
 			currentObj->select();
 		}
 	}
+	//delete closest intersected object, if any
 	if(button ==  GLUT_RIGHT_BUTTON && state == GLUT_DOWN && sceneObjs->size()!=0) deleteObj(currentObj->ID);
 }
 
@@ -461,6 +490,7 @@ void init(void)
 
 }
 
+//draw transformation mode in bottom left corner
 void drawText(){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -488,6 +518,7 @@ void drawText(){
 	
 }
 
+//draw base plane with normals
 void drawXZPlane(float y_intercept, float size){
 	glColor3f(0.2,0.2,0.2);
 	glLineWidth(1);
@@ -514,6 +545,7 @@ void drawXZPlane(float y_intercept, float size){
 
 }
 
+//draw x-y-z axis
 void drawAxis(float size)
 {	glLineWidth(10);
 	glBegin(GL_LINES);
@@ -532,9 +564,7 @@ void drawAxis(float size)
 }
 
 
-/* display function - GLUT display callback function
- *		clears the screen, sets the camera position, draws the ground plane and movable box
- */
+//display function
 void display(void)
 {
 	glMatrixMode(GL_PROJECTION);
@@ -562,7 +592,7 @@ void display(void)
 	glutSwapBuffers();
 }
 
-/* main function - program entry point */
+//main function
 int main(int argc, char** argv)
 {	instructions();
 	glutInit(&argc, argv);		//starts up GLUT
@@ -572,9 +602,9 @@ int main(int argc, char** argv)
 	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(50, 50);
 
-	glutCreateWindow("SimpleSceneGraph");	//creates the window
+	glutCreateWindow("~Simple 3D Modeler~");
 
-	glutDisplayFunc(display);	//registers "display" as the display callback function
+	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
 	glutMouseFunc(mouse);

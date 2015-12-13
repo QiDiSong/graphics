@@ -27,8 +27,9 @@ void NodeTransform::nodeSpecificCodeDown(){
 		break;
 	}
 }
+
+//for saving SG to txt
 void NodeTransform::saveNode(ofstream& file){
-	file << "t";
 	switch (transformationType){
 	case Translate:
 		file << "t";
@@ -43,7 +44,7 @@ void NodeTransform::saveNode(ofstream& file){
 	file << " "<< amount3.x;
 	file << " "<< amount3.y;
 	file << " "<< amount3.z;
-	file << ",";
+	file << " ";
 	if (this->children->size()==0){
 		file << endl;
 		return;

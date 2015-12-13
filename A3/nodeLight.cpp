@@ -14,8 +14,6 @@ NodeLight::NodeLight(float* pos, float* amb, float* dif,  float* spec, int n){	/
 	this->lightNum = n;
 }
 
-//as the node moves down through it, we want to perform down action
-//which in this case means drawing the model
 void NodeLight::nodeSpecificCodeDown(){
 	glEnable(GL_LIGHT0 + this->lightNum);
 	glLightfv(GL_LIGHT0 + this->lightNum,GL_POSITION,this->position);
@@ -24,20 +22,22 @@ void NodeLight::nodeSpecificCodeDown(){
 	glLightfv(GL_LIGHT0 + this->lightNum,GL_SPECULAR,this->specular);
 }
 
+//for saving SG to txt
+//commented out for now because loading is still buggy...
 void NodeLight::saveNode(ofstream& file){
-	file << "l";
-	file << arrToString(this->position);
-	file << arrToString(this->ambient);
-	file << arrToString(this->diffuse);
-	file << arrToString(this->specular);
-	file << " " << this->lightNum;
-	file << ",";
-	if (this->children->size()==0){
-		file << endl;
-		return;
-	}
-	for (int i=0; i<this->children->size();i++){
-		this->children->at(i)->saveNode(file);
-	}
+	// file << "l ";
+	// file << arrToString(this->position);
+	// file << arrToString(this->ambient);
+	// file << arrToString(this->diffuse);
+	// file << arrToString(this->specular);
+	// file << " " << this->lightNum;
+	// file << " ";
+	// if (this->children->size()==0){
+	// 	file << endl;
+	// 	return;
+	// }
+	// for (int i=0; i<this->children->size();i++){
+	// 	this->children->at(i)->saveNode(file);
+	// }
 }
 

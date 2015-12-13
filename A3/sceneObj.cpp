@@ -16,19 +16,20 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeTransform *scaleNode, N
 	this->isLight = false;
 	switch (modelNode->modelType){
 	case Sphere:
-		this->box = new BoundingBox(2);
+		this->box = new BoundingBox(1);
 		break;
 	case Cube:
 		this->box = new BoundingBox(0.5);
 		break;
 	case Cone:
-		this->box = new BoundingBox(1);
+		this->box = new BoundingBox(0.5);
+		this->box->translateBox(0, 0, 0.5);
 		break;
 	case Torus:
 		this->box = new BoundingBox(1);
 		break;
 	case Teapot:
-		this->box = new BoundingBox(2);
+		this->box = new BoundingBox(0.75);
 		break;
 	}
 }
@@ -44,10 +45,12 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeLight *lightNode, NodeM
 	this->isLight=true;
 }
 
+//this object is currently selected (so draw wireframe box around it)
 void SceneObj::select(){
 	this->modelNode->selected=true;
 }
 
+//this object is not currently selected (so don't draw wireframe box around it)
 void SceneObj::unselect(){
 	this->modelNode->selected=false;
 }
@@ -80,29 +83,3 @@ void SceneObj::translate(float x, float y, float z){
 		lightNode->position[2]+=z;
 	}
 }
-
-//print method
-//makes use of Point print method as well
-// void SceneObj::print(){
-// 	printf("position: ");
-// 	this->position.print();
-// 	printf("scale: ");
-// 	this->scaleFactor.print();
-// 	printf("orientation: ");
-// 	this->orientation.print();
-// }
-
-/*TESTING
-int main(int argc, char** argv){
-	float array[4] = {0.5,0.5,0.5,1};
-	Material someMat = Material(array, array, array, array, 0.5);
-	SceneObj* sphere1 = new SceneObj(SPHERE, someMat);
-	sphere1->print();
-	printf("\n");
-	sphere1->scale(-2,4,6);
-	sphere1->scale(0.5,0.5,0.5);
-	sphere1->move(-1,-2,1);
-	sphere1->move(1,2,0);
-	sphere1->print();
-	return 0;
-}*/

@@ -30,8 +30,6 @@ public:
 	NodeLight *lightNode;
 	BoundingBox * box;
 	bool isLight;
-
-	//bounding box???
 	
 	//public methods
 	void translate(float x, float y, float z);

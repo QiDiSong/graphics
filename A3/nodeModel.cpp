@@ -12,12 +12,10 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 	selected = false;
 }
 
-//as the node moves down through it, we want to perform down action
-//which in this case means drawing the model
 void NodeModel::nodeSpecificCodeDown(){
 	switch (modelType){
 	case Sphere:
-		if(selected) glutWireCube(3);
+		if(selected) glutWireCube(2);
 		glutSolidSphere(1, 50, 50);
 		break;
 	case Cube:
@@ -25,15 +23,19 @@ void NodeModel::nodeSpecificCodeDown(){
 		glutSolidCube(1);
 		break;
 	case Cone:
-		if(selected) glutWireCube(1.5);
-		glutSolidCone(0.5,1,50,50);
+		if(selected){
+			glTranslatef(0,0,0.5);
+			glutWireCube(1);
+			glTranslatef(0,0,-0.5);
+		}
+			glutSolidCone(0.5,1,50,50);
 		break;
 	case Torus:
-		if(selected) glutWireCube(1.5);
+		if(selected) glutWireCube(2);
 		glutSolidTorus(0.5,0.5,50,50);
 		break;
 	case Teapot:
-		if(selected) glutWireCube(1.5);
+		if(selected) glutWireCube(2);
 		glutSolidTeapot(1);
 		break;
 	case Lighting:
@@ -43,26 +45,26 @@ void NodeModel::nodeSpecificCodeDown(){
 	}
 }
 
+//for saving SG to txt
 void NodeModel::saveNode(ofstream& file){
-	file << "m";
 	switch (modelType){
 	case Sphere:
-		file << "s,";
+		file << "s";
 		break;
 	case Cube:
-		file << "C,";
+		file << "C";
 		break;
 	case Cone:
-		file << "c,";
+		file << "c";
 		break;
 	case Torus:
-		file << "t,";
+		file << "t";
 		break;
 	case Teapot:
-		file << "d,";
+		file << "p";
 		break;
 	case Lighting:
-		file << "l,";
+		file << "l";
 		break;
 	}
 	if (this->children->size()==0){

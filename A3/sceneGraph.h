@@ -2,6 +2,7 @@
 #define __SCENEGRAPH_H__
 
 #include "node.h"
+#include "sceneObj.h"
 
 class SceneGraph{
 public:
@@ -17,7 +18,7 @@ public:
 	void deleteThisNode();
 	void deleteChildByID(int id);
 	void save();
-	void load(char* file);
+	vector<SceneObj*>* load();
 	
 
 	//Scene Graph Draw

@@ -17,8 +17,8 @@ void NodeGroup::nodeSpecificCodeUp(){
 	glPopMatrix();
 }
 
+//for saving SG to txt
 void NodeGroup::saveNode(ofstream& file){
-	file << "g,";
 	if (this->children->size()==0){
 		file << endl;
 		return;

@@ -1,4 +1,4 @@
-
+//bounding box class for sceneObjs
 #include <stdio.h> //needed for printf command
 #include <gl\glut.h>
 #include <limits>
@@ -14,16 +14,21 @@ BoundingBox::~BoundingBox() {
 
 }
 
+//translates box with sceneObj
 void BoundingBox::translateBox(float x, float y, float z){
 	this->low.add(Point(x, y, z));
 	this->high.add(Point(x, y, z));
 }
 
+//scales box with sceneObj
 void BoundingBox::scaleBox(float x, float y, float z){
 	this->low.multiply(Point(x,y,z));
 	this->high.multiply(Point(x, y, z));
 }
 
+//check for intersection based on limits and ray paramaters
+//returns nearest point of intersection
+//if no intersection, returns -1
 double BoundingBox::slab(double* p0, double* pd){
 		double Tnear = -10000;
 		double Tfar = 10000;
@@ -60,23 +65,4 @@ double BoundingBox::slab(double* p0, double* pd){
 		if (Tfar < 0) return -1;
 
 		return Tnear;
-		// //y
-		// double Tymin = (low.y - p0[1])/pd[1];
-		// double Tymax = (high.y - p0[1])/pd[1];
-
-		// if (Tymin > Tymax) swap(Tymin, Tymax);
-		// if ((Txmin > Tymax)||(Tymin > Txmax)) return -1;
-		// if (Tymin > Txmin) Txmin = Tymin;
-		// if (Tymax < Txmax) Txmax = Tymax;
-
-		// //z
-		// double Tzmin = (low.z - p0[2])/pd[2];
-		// double Tzmax = (high.z - p0[2])/pd[2];
-
-		// if (Tzmin > Tzmax) swap(Tzmin, Tzmax)
-		// if ((Txmin > Tzmax)||(Tzmin > Txmax)) return -1;
-		// if (Tzmin > Txmin) Txmin = Tzmin;
-		// if (Tzmax < Txmax) Txmax = Tzmax;
-
-		// return Txmin;
 }

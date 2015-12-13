@@ -9,19 +9,17 @@ NodeMaterial::NodeMaterial(Material m){	//constructor
 	this->mat = m;
 }
 
-//as the node moves down through it, we want to perform down action
-//which in this case means drawing the model
 void NodeMaterial::nodeSpecificCodeDown(){
 	setMaterial(this->mat);
 }
 
+//for saving SG to txt
 void NodeMaterial::saveNode(ofstream& file){
-	file << "M";
 	file << arrToString(this->mat.ambient);
 	file << arrToString(this->mat.diffuse);
 	file << arrToString(this->mat.specular);
 	file << " " << this->mat.shine;
-	file << ",";
+	file << " ";
 	if (this->children->size()==0){
 		file << endl;
 		return;

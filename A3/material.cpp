@@ -6,7 +6,6 @@
 
 /*Material*/
 Material::Material(){
-	//bloop
 }
 
 Material::Material(float* amb, float* dif, float* spec, float sh){
@@ -16,6 +15,7 @@ Material::Material(float* amb, float* dif, float* spec, float sh){
 	this->shine = sh;
 }
 
+//set current draw material to the given material
 void setMaterial(Material m){
 	glMaterialfv(GL_FRONT, GL_AMBIENT, m.ambient);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, m.diffuse);

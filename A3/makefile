@@ -26,8 +26,8 @@ endif
 
 all: Modeller
 
-Modeller: BoundingBox.o point.o plane.o node.o nodeGroup.o nodeModel.o nodeTransform.o sceneGraph.o Modeller.o 
-	$(CC) -o $@ Modeller.o BoundingBox.o point.o plane.o $(CFLAGS) $(LDFLAGS)
+Modeller: BoundingBox.o point.o node.o nodeGroup.o nodeModel.o nodeTransform.o sceneGraph.o Modeller.o 
+	$(CC) -o $@ Modeller.o BoundingBox.o point.o $(CFLAGS) $(LDFLAGS)
 
 clean:
 	$(RM) *.o Modeller$(EXEEXT)
