@@ -6,14 +6,8 @@
 
 BoundingBox::BoundingBox(float objectSize) {
 	this->size = objectSize;
-	this->top = new Plane(Point(0.0, 1.0, 0.0), Point(0.0, size/2.0, 0.0)); //y is positive
-	this->bottom = new Plane(Point(0.0, -1.0, 0.0), Point(0.0, -(size/2.0), 0.0)); //y is negative
-	this->left = new Plane(Point(-1.0, 0.0, 0.0), Point(-(size/2.0), 0.0, 0.0)); //x is negative
-	this->right = new Plane(Point(1.0, 0.0, 0.0), Point(size/2.0, 0.0, 0.0)); //x is positive
-	this->front = new Plane(Point(0.0, 0.0, -1.0), Point(0.0, 0.0, -(size/2.0))); //z is negative
-	this->back = new Plane(Point(0.0, 0.0, 1.0), Point(0.0, 0.0, size/2.0)); //z is positive
-	this->low = Point(-size/2, -size/2, -size/2);
-	this->high = Point(size/2, size/2, size/2);
+	this->low = Point(-size, -size, -size);
+	this->high = Point(size, size, size);
 }
 
 BoundingBox::~BoundingBox() {
@@ -21,42 +15,68 @@ BoundingBox::~BoundingBox() {
 }
 
 void BoundingBox::translateBox(float x, float y, float z){
-	this->top = new Plane(Point(0.0, 1.0, 0.0), Point(0.0, size/2.0+y, 0.0)); //y is positive
-	this->bottom = new Plane(Point(0.0, -1.0, 0.0), Point(0.0, -(size/2.0)+y, 0.0)); //y is negative
-	this->left = new Plane(Point(-1.0, 0.0, 0.0), Point(-(size/2.0)+x, 0.0, 0.0)); //x is negative
-	this->right = new Plane(Point(1.0, 0.0, 0.0), Point(size/2.0+x, 0.0, 0.0)); //x is positive
-	this->front = new Plane(Point(0.0, 0.0, -1.0), Point(0.0, 0.0, -(size/2.0)+z)); //z is negative
-	this->back = new Plane(Point(0.0, 0.0, 1.0), Point(0.0, 0.0, size/2.0+z)); //z is positive
 	this->low.add(Point(x, y, z));
 	this->high.add(Point(x, y, z));
-	low.print();
-	high.print();
 }
 
 void BoundingBox::scaleBox(float x, float y, float z){
-	this->top = new Plane(Point(0.0, 1.0, 0.0), Point(0.0, size*y/2.0, 0.0)); //y is positive
-	this->bottom = new Plane(Point(0.0, -1.0, 0.0), Point(0.0, -(size*y/2.0), 0.0)); //y is negative
-	this->left = new Plane(Point(-1.0, 0.0, 0.0), Point(-(size*x/2.0), 0.0, 0.0)); //x is negative
-	this->right = new Plane(Point(1.0, 0.0, 0.0), Point(size*x/2.0, 0.0, 0.0)); //x is positive
-	this->front = new Plane(Point(0.0, 0.0, -1.0), Point(0.0, 0.0, -(size/2.0)*z)); //z is negative
-	this->back = new Plane(Point(0.0, 0.0, 1.0), Point(0.0, 0.0, size/2.0*z)); //z is positive
-	this->low = Point(-size/2*x, -size/2*y, -size/2*z);
-	this->high = Point(size/2*x, size/2*y, size/2*z);
+	this->low.multiply(Point(x,y,z));
+	this->high.multiply(Point(x, y, z));
 }
 
-float BoundingBox::intersects(double* nearPoint, double* farPoint){
-	float intersections[6];
-	intersections[0] = top->intersects(nearPoint, farPoint, this->low, this->high);
-	intersections[1] = bottom->intersects(nearPoint, farPoint, this->low, this->high);
-	intersections[2] = left->intersects(nearPoint, farPoint, this->low, this->high);
-	intersections[3] = right->intersects(nearPoint, farPoint, this->low, this->high);
-	intersections[4] = back->intersects(nearPoint, farPoint, this->low, this->high);
-	intersections[5] = front->intersects(nearPoint, farPoint, this->low, this->high);
-	float closest = std::numeric_limits<float>::infinity();
-	float distance;
-	for (int i = 0; i < 6; i++){
-		distance = intersections[i];
-		if (distance < closest || distance > 0) closest = distance;
-	}
-	return closest;
+double BoundingBox::slab(double* p0, double* pd){
+		double Tnear = -10000;
+		double Tfar = 10000;
+		//x
+		if (pd[0]==0){
+			if (p0[0]<low.x||p0[0]>high.x) return -1;
+		}
+		
+		double T1x = (low.x - p0[0])/pd[0];
+		double T2x = (high.x - p0[0])/pd[0];
+
+		if (T1x > T2x) std::swap(T1x, T2x);
+		if (T1x > Tnear) Tnear = T1x;
+		if (T2x < Tfar) Tfar = T2x;
+		if (Tnear > Tfar) return -1;
+		if (Tfar < 0) return -1;
+
+		double T1y = (low.y - p0[1])/pd[1];
+		double T2y = (high.y - p0[1])/pd[1];
+
+		if (T1y > T2y) std::swap(T1y, T2y);
+		if (T1y > Tnear) Tnear = T1y;
+		if (T2y < Tfar) Tfar = T2y;
+		if (Tnear > Tfar) return -1;
+		if (Tfar < 0) return -1;
+
+		double T1z = (low.z - p0[2])/pd[2];
+		double T2z = (high.z - p0[2])/pd[2];
+
+		if (T1z > T2z) std::swap(T1z, T2z);
+		if (T1z > Tnear) Tnear = T1z;
+		if (T2z < Tfar) Tfar = T2z;
+		if (Tnear > Tfar) return -1;
+		if (Tfar < 0) return -1;
+
+		return Tnear;
+		// //y
+		// double Tymin = (low.y - p0[1])/pd[1];
+		// double Tymax = (high.y - p0[1])/pd[1];
+
+		// if (Tymin > Tymax) swap(Tymin, Tymax);
+		// if ((Txmin > Tymax)||(Tymin > Txmax)) return -1;
+		// if (Tymin > Txmin) Txmin = Tymin;
+		// if (Tymax < Txmax) Txmax = Tymax;
+
+		// //z
+		// double Tzmin = (low.z - p0[2])/pd[2];
+		// double Tzmax = (high.z - p0[2])/pd[2];
+
+		// if (Tzmin > Tzmax) swap(Tzmin, Tzmax)
+		// if ((Txmin > Tzmax)||(Tzmin > Txmax)) return -1;
+		// if (Tzmin > Txmin) Txmin = Tzmin;
+		// if (Tzmax < Txmax) Txmax = Tzmax;
+
+		// return Txmin;
 }

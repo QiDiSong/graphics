@@ -29,6 +29,7 @@ public:
 	NodeModel *modelNode;
 	NodeLight *lightNode;
 	BoundingBox * box;
+	bool isLight;
 
 	//bounding box???
 	

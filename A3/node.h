@@ -37,6 +37,7 @@ public:
 	virtual void nodeSpecificCodeDown();
 	virtual void nodeSpecificCodeUp();
 	virtual void saveNode(ofstream& file);
+	string arrToString(float* arr);
 };
 
 #endif

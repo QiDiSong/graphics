@@ -18,6 +18,7 @@ public:
 	void deleteChildByID(int id);
 	void save();
 	void load(char* file);
+	
 
 	//Scene Graph Draw
 	void draw();

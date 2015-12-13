@@ -13,21 +13,24 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeTransform *scaleNode, N
 	this->rotNode = rotNode;
 	this->matNode = matNode;
 	this->modelNode = modelNode;
-	this->box = new BoundingBox(1);
-
-	// switch (modelNode->modelType){
-	// case Sphere:
-	// 	this->box = new BoundingBox(1);
-	// 	break;
-	// case Cube:
-	// 	this->box = new BoundingBox(1);
-	// 	break;
-	// case Teapot:
-	// 	break;
-	// case Custom:
-	// 	//own mesh thing
-	// 	break;
-	//}
+	this->isLight = false;
+	switch (modelNode->modelType){
+	case Sphere:
+		this->box = new BoundingBox(2);
+		break;
+	case Cube:
+		this->box = new BoundingBox(0.5);
+		break;
+	case Cone:
+		this->box = new BoundingBox(1);
+		break;
+	case Torus:
+		this->box = new BoundingBox(1);
+		break;
+	case Teapot:
+		this->box = new BoundingBox(2);
+		break;
+	}
 }
 
 //lighting obj
@@ -36,28 +39,9 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeLight *lightNode, NodeM
 	this->transNode = transNode;
 	this->modelNode = modelNode;
 	this->lightNode = lightNode;
-	switch (modelNode->modelType){
-	case Sphere:
-		this->box = new BoundingBox(4);
-		break;
-	case Cube:
-		this->box = new BoundingBox(2);
-		break;
-	case Cone:
-		this->box = new BoundingBox(2);
-		break;
-	case Torus:
-		this->box = new BoundingBox(2);
-		break;
-	case Teapot:
-		this->box = new BoundingBox(6);
-		break;
-	case Lighting:
-		this->box = new BoundingBox(1);
-		this->box->translateBox(this->lightNode->position[0],this->lightNode->position[1],this->lightNode->position[2]);
-		this->box->scaleBox(0.5,0.5,0.5);
-		break;
-	}
+	this->box = new BoundingBox(0.5);
+	this->box->translateBox(this->lightNode->position[0],this->lightNode->position[1],this->lightNode->position[2]);
+	this->isLight=true;
 }
 
 void SceneObj::select(){

@@ -38,19 +38,19 @@ float Plane::intersects(double* nearPoint, double* farPoint, Point low, Point hi
 	}
 
 	//x side
-	if((intersectionPoint->y >= low.y) && (intersectionPoint->y <= high.y) && (intersectionPoint->z >= low.z) && (intersectionPoint->z <= high.z)) {
+	if((intersectionPoint->y > low.y) && (intersectionPoint->y < high.y) && (intersectionPoint->z > low.z) && (intersectionPoint->z < high.z)) {
 		hitX = true;
 		//printf("Hit X! \n");
 		//printf("Distance: %f \n", distance);
 	}
 
 	//y side
-	if((intersectionPoint->x >= low.x) && (intersectionPoint->x <= high.x) && (intersectionPoint->z >= low.z) && (intersectionPoint->z <= high.z)) {
+	if((intersectionPoint->x > low.x) && (intersectionPoint->x < high.x) && (intersectionPoint->z > low.z) && (intersectionPoint->z < high.z)) {
 		hitY = true;
 		//printf("Hit Y! \n");
 	}
 	//z side
-	if((intersectionPoint->y >= low.y) && (intersectionPoint->y <= high.y) && (intersectionPoint->x >= low.x) && (intersectionPoint->x <= high.x)) {
+	if((intersectionPoint->y > low.y) && (intersectionPoint->y < high.y) && (intersectionPoint->x > low.x) && (intersectionPoint->x < high.x)) {
 		hitZ = true;
 		//printf("Hit Z! \n");
 	}

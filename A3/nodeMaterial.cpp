@@ -16,7 +16,12 @@ void NodeMaterial::nodeSpecificCodeDown(){
 }
 
 void NodeMaterial::saveNode(ofstream& file){
-	file << "M,";
+	file << "M";
+	file << arrToString(this->mat.ambient);
+	file << arrToString(this->mat.diffuse);
+	file << arrToString(this->mat.specular);
+	file << " " << this->mat.shine;
+	file << ",";
 	if (this->children->size()==0){
 		file << endl;
 		return;

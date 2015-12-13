@@ -11,6 +11,7 @@ public:
 	float z;
 	void print();
 	void add(Point a);
+	void multiply(Point a);
 };
 
 #endif

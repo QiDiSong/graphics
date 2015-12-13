@@ -3,6 +3,7 @@
 #include <gl\glut.h>
 #include <iostream>
 #include <fstream>
+#include <string>
 using namespace std;
 
 NodeLight::NodeLight(float* pos, float* amb, float* dif,  float* spec, int n){	//constructor
@@ -25,6 +26,12 @@ void NodeLight::nodeSpecificCodeDown(){
 
 void NodeLight::saveNode(ofstream& file){
 	file << "l";
+	file << arrToString(this->position);
+	file << arrToString(this->ambient);
+	file << arrToString(this->diffuse);
+	file << arrToString(this->specular);
+	file << " " << this->lightNum;
+	file << ",";
 	if (this->children->size()==0){
 		file << endl;
 		return;
@@ -33,3 +40,4 @@ void NodeLight::saveNode(ofstream& file){
 		this->children->at(i)->saveNode(file);
 	}
 }
+

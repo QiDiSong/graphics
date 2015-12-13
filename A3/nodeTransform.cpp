@@ -40,9 +40,9 @@ void NodeTransform::saveNode(ofstream& file){
 		file << "s";
 		break;
 	}
-	file << amount3.x;
-	file << amount3.y;
-	file << amount3.z;
+	file << " "<< amount3.x;
+	file << " "<< amount3.y;
+	file << " "<< amount3.z;
 	file << ",";
 	if (this->children->size()==0){
 		file << endl;

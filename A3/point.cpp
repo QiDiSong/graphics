@@ -20,6 +20,12 @@ void Point::add(Point a){
 	this->z += a.z;
 }
 
+void Point::multiply(Point a){
+	this->x += this->x*a.x;
+	this->y += this->y*a.y;
+	this->z += this->z*a.z;
+}
+
 //print method
 void Point::print(){
 	printf("point= (%f, %f, %f) \n",this->x,this->y,this->z);
