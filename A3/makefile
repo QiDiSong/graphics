@@ -26,7 +26,7 @@ endif
 
 all: main
 
-main: main.o
+main: BoundingBox.o point.o plane.o node.o nodeGroup.o nodeModel.o nodeTransform.o sceneGraph.o main.o 
 	$(CC) -o $@ main.o BoundingBox.o point.o plane.o $(CFLAGS) $(LDFLAGS)
 
 clean:

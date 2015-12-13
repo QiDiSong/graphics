@@ -30,8 +30,8 @@ implement next:
 #include <limits>
 #include <iostream>
 
-#include "scene_graph/structs.h"
-#include "scene_graph/sceneObj.cpp"
+#include "structs.h"
+#include "sceneObj.cpp"
 
 //camera
 float pos[] = {0,1,0};
@@ -95,8 +95,6 @@ float farPoint[] = {1,1,1};
 
 double start[] ={0,0,0}, end[]={1,1,1};
 
-
-
 //node ids
 int masterID = 0;
 int getID(){
@@ -104,8 +102,8 @@ int getID(){
 }
 
 //sceneGraph
-#include "scene_graph/sceneGraph.cpp"
-#include "scene_graph/nodeGroup.cpp"
+#include "sceneGraph.cpp"
+#include "nodeGroup.cpp"
 
 SceneGraph *SG;
 int nextChild = 0;
@@ -333,8 +331,9 @@ void keyboard(unsigned char key, int x, int y)
 			insertLight(light_pos1, amb1, diff1, spec1, 1);
 			break;
 		case 9: // toggle selected object (temporary fix before ray picking is implemented)
+			currentObj->unselect();
 			currentObj = sceneObjs->at(currentObjIndex++%sceneObjs->size());
-			printf("ID= %i",currentObj->ID);
+			currentObj->select();
 			break;
 		default:
 			break;
