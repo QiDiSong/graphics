@@ -49,14 +49,23 @@ SceneObj::SceneObj(int ID, NodeTransform *transNode, NodeLight *lightNode, NodeM
 	case Torus:
 		this->box = new BoundingBox(2);
 		break;
-	case Dodecahedron:
+	case Teapot:
 		this->box = new BoundingBox(6);
 		break;
 	case Lighting:
-		this->box = new BoundingBox(2);
+		this->box = new BoundingBox(1);
 		this->box->translateBox(this->lightNode->position[0],this->lightNode->position[1],this->lightNode->position[2]);
+		this->box->scaleBox(0.5,0.5,0.5);
 		break;
 	}
+}
+
+void SceneObj::select(){
+	this->modelNode->selected=true;
+}
+
+void SceneObj::unselect(){
+	this->modelNode->selected=false;
 }
 
 void SceneObj::changeMaterial(Material m){

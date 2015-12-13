@@ -12,7 +12,7 @@ enum ModelType{
 	Cube,
 	Cone,
 	Torus,
-	Dodecahedron,
+	Teapot,
 	Lighting,
 };
 
@@ -26,6 +26,7 @@ public:
 	virtual void saveNode(ofstream& file);
 
 	ModelType modelType;
+	bool selected;
 	//BoundingBox box;
 
 

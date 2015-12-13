@@ -173,6 +173,8 @@ void insertObj(ModelType type){
 	//update globals
 	SceneObj* newObj = new SceneObj(groupID, trNode, scNode, rotNode, matNode, modelNode);
 	sceneObjs->push_back(newObj);
+	if (nextChild>1) currentObj->unselect();
+	newObj->select();
 	currentObj = newObj;
 	currentObjIndex = sceneObjs->size()-1;
 }
@@ -209,6 +211,8 @@ void insertLight(float pos[4], float amb[4], float dif[4], float spec[4], int n)
 
 	//update globals
 	SceneObj* newObj = new SceneObj(groupID, trNode, lightNode, modelNode);
+	if (nextChild>1) currentObj->unselect();
+	newObj->select();
 	sceneObjs->push_back(newObj);
 	currentObj = newObj;
 	//newObj->translate(temp3.x, temp3.y, temp3.z);
@@ -226,7 +230,6 @@ void deleteObj(int ID){
 	sceneObjs->erase(sceneObjs->begin()+index);
 	currentObj = sceneObjs->at(sceneObjs->size()-1);
 	nextChild--;
-
 }
 
 //callbacks
@@ -250,7 +253,7 @@ void keyboard(unsigned char key, int x, int y)
 			insertObj(Torus);
 			break;
 		case 'p':
-			insertObj(Dodecahedron);
+			insertObj(Teapot);
 			break;
 		case 'a': //-x
 			if (sceneObjs->size()!=0){
@@ -443,7 +446,9 @@ void mouse(int button, int state, int x, int y){
 			}
 		}
 		if (closestIndex < intersections->size()){
+			currentObj->unselect();
 			currentObj = sceneObjs->at(closestIndex);
+			currentObj->select();
 		}
 		//if closest != infinity set current obj to the closest intersect
 		//else do nothing

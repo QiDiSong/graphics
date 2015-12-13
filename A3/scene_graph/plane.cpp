@@ -54,7 +54,7 @@ float Plane::intersects(double* nearPoint, double* farPoint, Point low, Point hi
 		hitZ = true;
 		//printf("Hit Z! \n");
 	}
-	if ((hitZ && hitX) || (hitZ && hitY) || (hitX && hitY)) return t;
+	if (hitZ || hitX || hitY) return t;
 
 
 }

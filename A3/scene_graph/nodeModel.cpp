@@ -9,6 +9,7 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 	nodeType = model;
 	modelType = whatType;
 	isDrawable = true;
+	selected = false;
 }
 
 //as the node moves down through it, we want to perform down action
@@ -16,21 +17,27 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 void NodeModel::nodeSpecificCodeDown(){
 	switch (modelType){
 	case Sphere:
+		if(selected) glutWireCube(3);
 		glutSolidSphere(1, 50, 50);
 		break;
 	case Cube:
+		if(selected) glutWireCube(1.5);
 		glutSolidCube(1);
 		break;
 	case Cone:
+		if(selected) glutWireCube(1.5);
 		glutSolidCone(0.5,1,50,50);
 		break;
 	case Torus:
+		if(selected) glutWireCube(1.5);
 		glutSolidTorus(0.5,0.5,50,50);
 		break;
-	case Dodecahedron:
-		glutSolidDodecahedron();
+	case Teapot:
+		if(selected) glutWireCube(1.5);
+		glutSolidTeapot(1);
 		break;
 	case Lighting:
+		if(selected) glutWireCube(1);
 		glutSolidSphere(0.5,50,50);
 		break;
 	}
@@ -51,7 +58,7 @@ void NodeModel::saveNode(ofstream& file){
 	case Torus:
 		file << "t,";
 		break;
-	case Dodecahedron:
+	case Teapot:
 		file << "d,";
 		break;
 	case Lighting:

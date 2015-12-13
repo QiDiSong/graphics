@@ -60,38 +60,3 @@ float BoundingBox::intersects(double* nearPoint, double* farPoint){
 	}
 	return closest;
 }
-
-// bool BoundingBox::slab(double* p0, double* pd){
-// 		if (slab(p0[0], pd[0], low.x, high.x)||slab(p0[1], pd[1], low.y, high.y)||slab(p0[2], pd[2], low.z, high.z)){
-// 			return true;
-// 		}
-// 		return false;
-// }
-
-// bool BoundingBox::slab(double a0d, double add, float ah, float al){
-// 	float Tnear = -1000;
-// 	float Tfar = 1000;
-// 	float T1 = 0;
-// 	float T2 = 0;
-// 	float a0 = (float)a0d;
-// 	float ad = (float)add;
-// 	if (ad = 0){
-// 		if (ad < al || a0 > ah){
-// 			return false;
-// 		}
-// 	}
-// 	else{
-// 		T1 = (al-a0)/ad;
-// 		T2 = (ah-a0)/ad;
-// 	}
-// 	if (T1>T2){
-// 		float temp = T1;
-// 		T1 = T2;
-// 		T2 = temp;
-// 	}
-// 	if(T1>Tnear) Tnear = T1;
-// 	if(T2<Tfar) Tfar = T2;
-// 	if(Tnear>Tfar) return false;
-// 	if(Tfar<0) return false;
-// 	return true;		
-// }
