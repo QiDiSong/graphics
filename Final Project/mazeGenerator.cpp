@@ -26,19 +26,19 @@ void Redraw(Cell Level[][SIZE]); //DISPLAY
 void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, int & goalY);
 
 
-int main() {
-	Cell Level[SIZE][SIZE];
-	int positionX = 0;
-	int positionY = 0;
-	int goalX = 0;
-	int goalY = 0;
+// int main() {
+// 	Cell Level[SIZE][SIZE];
+// 	int positionX = 0;
+// 	int positionY = 0;
+// 	int goalX = 0;
+// 	int goalY = 0;
 
-	Initialize(Level);
-	Redraw(Level); //DISPLAY
-	DrawMaze(Level, positionX, positionY, goalX, goalY);
+// 	Initialize(Level);
+// 	Redraw(Level); //DISPLAY
+// 	DrawMaze(Level, positionX, positionY, goalX, goalY);
 
-	return 0;
-}
+// 	return 0;
+// }
 
 //set up maze
 void Initialize(Cell Level[][SIZE]) {
@@ -197,7 +197,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 		}
 
 		ClearScreen();
-		Redraw(Level);
+		//Redraw(Level);
 	}
 
 	goalX = randomX;
