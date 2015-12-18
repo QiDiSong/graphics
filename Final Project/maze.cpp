@@ -16,7 +16,6 @@ float amb0[4] = {0.5,0.5,0.5,1};
 float diff0[4] = {1,1,1, 1};
 float spec0[4] = {1, 1, 1, 1};
 
-<<<<<<< HEAD
 //animation
 float pos[] = {5,1,5};
 float rot[] = {0, 0, 0};
@@ -27,7 +26,7 @@ bool animate = false;
 
 //maze stuff
 int mazeScale = 2;
-=======
+
 /* TEXTURE */
 GLubyte* image;
 GLubyte* img_data;
@@ -91,7 +90,6 @@ GLubyte* LoadPPM(char* file, int* width, int* height, int* MAX)
 
 	return img;
 }
->>>>>>> f2a286b1d61c8e1c326b2ee26d0cf7d4282c54b2
 
 void drawXZPlane(float y_intercept, float size){
 	glColor3f(0.1,0.1,0.1);
