@@ -17,6 +17,7 @@ struct Cell {
 	bool leftWall;
 	bool rightWall;
 	char display;
+	bool vacant;
 };
 
 //declare functions
@@ -44,7 +45,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 void Initialize(Cell Level[][SIZE]) {
 	for(int i = 0; i < SIZE; i++) {
 		for(int j = 0; j < SIZE; j++) {
-			Level[i][j].display = '*'; //DISPLAY
+			Level[i][j].vacant = false; //DISPLAY
 			Level[i][j].visited = false; //no cells visited
 			Level[i][j].topWall = true; //all walls intact, no steps taken
 			Level[i][j].bottomWall = true;
@@ -72,11 +73,15 @@ void ClearScreen() {
 	SetConsoleCursorPosition(hOut, Position);
 }
 
-void Redraw(Cell Level[][SIZE]) {
+void Redraw(Cell Level[][SIZE], int startX, int startY, int goalX, int goalY) {
 	for(int i = 0; i < SIZE; i++) {
 		cout << endl;
-		for(int j = 0; j < SIZE; j++)
-			cout << " " << Level[i][j].display;
+		for(int j = 0; j < SIZE; j++){
+			if (i == startX && j == startY) cout << " S";
+			else if (i == goalX && j == goalY) cout << " E";
+			else if(Level[i][j].vacant) cout << "  ";
+			else cout << " " << "*";
+		}
 	}
 }
 
@@ -93,7 +98,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 	int percent = 0;
 	stack<int> backTrackX, backTrackY; //need stack to trace the reverse path
 
-	Level[randomY][randomX].display = 'S'; //mark start cell with an S //DISPLAY
+	Level[randomY][randomX].vacant = true; //mark start cell with an S //DISPLAY
 	Level[randomY][randomX].visited = true; //mark start cell as visited
 
 	while(visitedCells < totalCells) {
@@ -107,7 +112,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 			//choose upper wall
 			if((random == 1) && (randomY > 1)) {
 				if(Level[randomY-2][randomX].visited == false) { //if cell not visited
-					Level[randomY-1][randomX].display = ' '; //delete display //DISPLAY
+					Level[randomY-1][randomX].vacant = true; //mark as wall
 					Level[randomY-1][randomX].visited = true; //change cell status to visited
 					Level[randomY][randomX].topWall = false; //knock down top wall
 
@@ -116,7 +121,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 
 					randomY -= 2; //move to next cell
 					Level[randomY][randomX].visited = true; //mark cell moved to as visited
-					Level[randomY][randomX].display = ' '; //delete display //DISPLAY
+					Level[randomY][randomX].vacant = true; //mark as wall
 					Level[randomY][randomX].bottomWall = false; //knock down wall
 					visitedCells++; //increase visited cells counter
 				}
@@ -127,7 +132,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 			//choose lower wall
 			else if((random == 2) && (randomY < SIZE-2)) {
 				if(Level[randomY+2][randomX].visited == false) { //if cell not visited
-					Level[randomY+1][randomX].display = ' '; //delete display //DISPLAY
+					Level[randomY+1][randomX].vacant = true; //mark as wall
 					Level[randomY+1][randomX].visited = true; //change cell status to visited
 					Level[randomY][randomX].bottomWall = false; //knock down bottom wall
 
@@ -136,7 +141,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 
 					randomY += 2; //move to next cell
 					Level[randomY][randomX].visited = true; //mark cell moved to as visited
-					Level[randomY][randomX].display = ' '; //delete display //DISPLAY
+					Level[randomY][randomX].vacant = true; //mark as wall
 					Level[randomY][randomX].topWall = false; //knock down wall
 					visitedCells++; //increase visited cells counter
 				}
@@ -147,7 +152,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 			//choose left wall
 			else if((random == 3) && (randomX > 1)) {
 				if(Level[randomY][randomX-2].visited == false) { //if cell not visited
-					Level[randomY][randomX-1].display = ' '; //delete display //DISPLAY
+					Level[randomY][randomX-1].vacant = true; //mark as wall
 					Level[randomY][randomX-1].visited = true; //change cell status to visited
 					Level[randomY][randomX].leftWall = false; //knock down left wall
 
@@ -156,7 +161,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 
 					randomX -= 2; //move to next cell
 					Level[randomY][randomX].visited = true; //mark cell moved to as visited
-					Level[randomY][randomX].display = ' '; //delete display //DISPLAY
+					Level[randomY][randomX].vacant = true; //mark as wall
 					Level[randomY][randomX].rightWall = false; //knock down wall
 					visitedCells++; //increase visited cells counter
 				}
@@ -167,7 +172,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 			//choose right wall
 			else if((random == 4) && (randomX < SIZE-2)) {
 				if(Level[randomY][randomX+2].visited == false) { //if cell not visited
-					Level[randomY][randomX+1].display = ' '; //delete display //DISPLAY
+					Level[randomY][randomX+1].vacant = true; //mark as wall
 					Level[randomY][randomX+1].visited = true; //change cell status to visited
 					Level[randomY][randomX].rightWall = false; //knock down right wall
 
@@ -176,7 +181,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 
 					randomX += 2; //move to next cell
 					Level[randomY][randomX].visited = true; //mark cell moved to as visited
-					Level[randomY][randomX].display = ' '; //delete display //DISPLAY
+					Level[randomY][randomX].vacant = true; //mark as wall
 					Level[randomY][randomX].leftWall = false; //knock down wall
 					visitedCells++; //increase visited cells counter
 				}
@@ -197,14 +202,14 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 		}
 
 		ClearScreen();
-		//Redraw(Level);
+		//Redraw(Level, positionX, positionY, -1, -1);
 	}
 
 	goalX = randomX;
 	goalY = randomY;
-	Level[goalY][goalX].display = 'E';
-	system("cls");
+	Level[goalY][goalX].vacant = true;
+	//system("cls");
 	ClearScreen();
-	Redraw(Level);
-	cout << endl << "\a\t	Complete!" << endl;
+	Redraw(Level, positionX, positionY, goalX, goalY);
+	cout << endl << "\t	Complete!" << endl;
 }

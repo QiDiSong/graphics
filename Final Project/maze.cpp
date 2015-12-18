@@ -44,7 +44,7 @@ void drawXZPlane(float y_intercept, float size){
 void drawWalls(Cell path[][SIZE]){
 	for (int x = 0; x < SIZE; x++){
 		for (int z= 0; z < SIZE; z++){
-			if (path[x][z].display=='*'){
+			if (!path[x][z].vacant){
 				glColor3f(1,0,0);
 				glPushMatrix();
 				glTranslatef(x, 0, z);
