@@ -16,6 +16,17 @@ float amb0[4] = {0.5,0.5,0.5,1};
 float diff0[4] = {1,1,1, 1};
 float spec0[4] = {1, 1, 1, 1};
 
+//animation
+float pos[] = {5,1,5};
+float rot[] = {0, 0, 0};
+float headRot[] = {0, 0, 0};
+int frame = 0;
+int holdKey = 0;
+bool animate = false;
+
+//maze stuff
+int mazeScale = 2;
+
 void drawXZPlane(float y_intercept, float size){
 	glColor3f(0.1,0.1,0.1);
 	glLineWidth(1);
@@ -58,11 +69,83 @@ void drawWalls(Cell path[][SIZE]){
 
 void kbd(unsigned char key, int x, int y)
 {
-	//if the "q" key is pressed, quit the program
-	if(key == 'q' || key == 'Q')
+	if (holdKey>1) animate = true;
+
+	switch (key)
 	{
-		exit(0);
+		case 'q':
+		case 27:
+			exit (0);
+			break;
+
+		case 'a':
+		case 'A':
+			//if(pos[0] > -4.4)
+				pos[0] -= 0.1;
+			rot[1] = -90;
+			holdKey++;
+			if (animate) frame++;
+			break;
+
+		case 'w':
+		case 'W':
+			//if(pos[2] > -4.4)
+				pos[2] -= 0.1;
+			rot[1] = 180;
+			holdKey++;
+			if (animate) frame++;
+			break;
+
+		case 'd':
+		case 'D':
+			//if(pos[0] < 4.4)
+				pos[0]+=0.1;
+			rot[1] = 90;
+			holdKey++;
+			if (animate) frame++;
+			break;
+
+		case 's':
+		case 'S':
+			//if(pos[2] < 4.4)
+				pos[2] += 0.1;
+			rot[1] = 0;
+			holdKey++;
+			if (animate) frame++;
+			break;
+
+		case 'y':
+		case 'Y':
+			if(headRot[1] < 85)
+				headRot[1] += 1;
+			break;
+
+		case 'u':
+		case 'U':
+			if(headRot[1] > -85)
+				headRot[1] -= 1;
+			break;
+			
 	}
+	glutPostRedisplay();
+}
+
+//resets the vars used to check if a key is being held down (for walk-animation)
+void keyUp(unsigned char key,int x, int y){
+	switch(key)
+	{
+		case 'a':
+		case 's':
+		case 'd':
+		case 'w':
+			holdKey = 0;
+			animate = false;
+			break;
+		default:
+			break;
+
+	}
+	glutPostRedisplay();
 }
 
 void special(int key, int x, int y){
@@ -88,6 +171,89 @@ void special(int key, int x, int y){
 	}
 }
 
+void drawSnowman(float* pos, float* rot, int frame)
+{
+	glPushMatrix();
+
+	glTranslatef(pos[0], pos[1], pos[2]);
+	glRotatef(rot[1], 0, 1, 0);
+
+	//bouncing animation while the character is moving (movement key held down)
+	if (animate)
+	{	if ((frame)%8==7||(frame)%8==5){
+			glTranslatef(0,0.025,0);
+			glScalef(1,1.025,1);
+		}
+		if ((frame)%8==6){
+			glTranslatef(0,0.025,0);
+			glScalef(1,1.025,1);
+		}
+		if ((frame)%8==3||(frame)%8==1){
+			glTranslatef(0,-0.025,0);
+			glScalef(1,0.925,1);
+		}
+		if ((frame)%8==2){
+			glTranslatef(0,-0.025,0);
+			glScalef(1,0.925,1);
+		}
+	}
+
+	//draw body
+	glColor3f(1,1,1);
+	glutSolidSphere(1, 16, 16);
+
+	//draw buttons
+	glPushMatrix();
+	glTranslatef(0, 0.35, 0.9);
+	glColor3f(0, 0, 0);
+	glutSolidSphere(0.1, 10, 10);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0, 0.15, 0.95);
+	glColor3f(0, 0, 0);
+	glutSolidSphere(0.1, 10, 10);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0, -0.05, 0.95);
+	glColor3f(0, 0, 0);
+	glutSolidSphere(0.1, 10, 10);
+	glPopMatrix();
+
+
+	glPushMatrix();
+	//translate relative to body, and draw head
+	glTranslatef(0, 1.25, 0);
+	glRotatef(headRot[1], 0, 1, 0); //turn the head relative to the body
+	glColor3f(1,1,1);
+	glutSolidSphere(0.5, 16, 16);
+	
+	//translate and draw right eye
+	glPushMatrix();
+	glTranslatef(0.2, 0.15, 0.45);
+	glColor3f(0,0,0);
+	glutSolidSphere(0.1, 10, 10);
+	glPopMatrix();
+
+	//translate and draw left eye
+	glPushMatrix();
+	glTranslatef(-0.2, 0.15, 0.45);
+	glColor3f(0,0,0);
+	glutSolidSphere(0.1, 10, 10);
+	glPopMatrix();
+
+	//translate and draw nose
+	glPushMatrix();
+	glTranslatef(0, 0, 0.5);
+	glColor3f(1,0.4,0);
+	glutSolidSphere(0.1, 10, 10);
+	glPopMatrix();
+
+	glPopMatrix();//body
+	glPopMatrix();//snowman
+}
+
 void display()
 {
 	//clear the screen
@@ -104,8 +270,13 @@ void display()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
 
+	glPushMatrix();
+	glScalef(mazeScale, 1, mazeScale);
 	drawXZPlane(0, SIZE);
 	drawWalls(maze);
+	glPopMatrix();
+
+	drawSnowman(pos, rot, frame);
 	
 	//swap buffers - rendering is done to the back buffer, bring it forward to display
 	glutSwapBuffers();
@@ -149,14 +320,13 @@ int main(int argc, char** argv)
 	glutDisplayFunc(display);
 	glutSpecialFunc(special);
 
-	//maze stuff
-	int positionX = 0;
-	int positionY = 0;
-	int goalX = 0;
-	int goalY = 0;
-
 	Initialize(maze);
-	DrawMaze(maze, positionX, positionY, goalX, goalY);
+	DrawMaze(maze);
+	int* startEnd = getStartAndGoalCoords(maze);
+	pos[0] = startEnd[0]*mazeScale;
+	pos[2] = startEnd[1]*mazeScale;
+	drawSnowman(pos, rot, frame);
+
 
 	//start the program!
 	glutMainLoop();

@@ -16,8 +16,10 @@ struct Cell {
 	bool bottomWall;
 	bool leftWall;
 	bool rightWall;
-	char display;
+
 	bool vacant;
+	bool startingCell;
+	bool goalCell;
 };
 
 //declare functions
@@ -25,6 +27,7 @@ void Initialize(Cell Level[][SIZE]);
 void ClearScreen();
 void Redraw(Cell Level[][SIZE]); //DISPLAY
 void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, int & goalY);
+int* getStartAndGoalCoords(Cell Level[][SIZE]);
 
 
 // int main() {
@@ -51,6 +54,8 @@ void Initialize(Cell Level[][SIZE]) {
 			Level[i][j].bottomWall = true;
 			Level[i][j].leftWall = true;
 			Level[i][j].rightWall = true;
+			Level[i][j].startingCell = false;
+			Level[i][j].goalCell = false;
 		}
 	}
 	for(int i = 1; i < SIZE-1; i++) {
@@ -73,12 +78,12 @@ void ClearScreen() {
 	SetConsoleCursorPosition(hOut, Position);
 }
 
-void Redraw(Cell Level[][SIZE], int startX, int startY, int goalX, int goalY) {
+void Redraw(Cell Level[][SIZE]) {
 	for(int i = 0; i < SIZE; i++) {
 		cout << endl;
 		for(int j = 0; j < SIZE; j++){
-			if (i == startX && j == startY) cout << " S";
-			else if (i == goalX && j == goalY) cout << " E";
+			if (Level[i][j].startingCell) cout << " S";
+			else if (Level[i][j].goalCell) cout << " E";
 			else if(Level[i][j].vacant) cout << "  ";
 			else cout << " " << "*";
 		}
@@ -86,19 +91,20 @@ void Redraw(Cell Level[][SIZE], int startX, int startY, int goalX, int goalY) {
 }
 
 //generate the maze
-void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, int &goalY) {
+void DrawMaze(Cell Level[][SIZE]) {
 	srand((unsigned)time(NULL)); //pick a random cell to start in
 	int random = 0;
 	int randomX = ((2*rand())+1)%(SIZE-1); //generate random odd number between 1 and size
 	int randomY = ((2*rand())+1)%(SIZE-1);
-	positionX = randomX; //set random numbers as start place
-	positionY = randomY;
+	int positionX = randomX; //set random numbers as start place
+	int positionY = randomY;
 	int visitedCells = 1;
 	int totalCells = ((SIZE-1)/2)*((SIZE-1)/2);
 	int percent = 0;
 	stack<int> backTrackX, backTrackY; //need stack to trace the reverse path
 
 	Level[randomY][randomX].vacant = true; //mark start cell with an S //DISPLAY
+	Level[randomY][randomX].startingCell = true;
 	Level[randomY][randomX].visited = true; //mark start cell as visited
 
 	while(visitedCells < totalCells) {
@@ -190,7 +196,7 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 			}
 
 			percent = (visitedCells*100/totalCells*100)/100; // progress in percentage
-			cout << endl << "	Generating a Random Maze... " << percent << "%" << endl;
+			//cout << endl << "	Generating a Random Maze... " << percent << "%" << endl;
 		}
 
 		else {
@@ -201,15 +207,39 @@ void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, in
 			backTrackY.pop();
 		}
 
-		ClearScreen();
+		//ClearScreen();
 		//Redraw(Level, positionX, positionY, -1, -1);
 	}
 
-	goalX = randomX;
-	goalY = randomY;
+	int goalX = randomX;
+	int goalY = randomY;
 	Level[goalY][goalX].vacant = true;
+	Level[goalY][goalX].goalCell = true;
 	//system("cls");
-	ClearScreen();
-	Redraw(Level, positionX, positionY, goalX, goalY);
-	cout << endl << "\t	Complete!" << endl;
+	//ClearScreen();
+	//Redraw(Level);
+	//cout << endl << "\t	Complete!" << endl;
 }
+
+int* getStartAndGoalCoords(Cell Level[][SIZE]){
+	int coords[4];
+
+	for (int x = 0; x < SIZE; x++){
+		for (int z = 0; z < SIZE; z++){
+			if (Level[x][z].startingCell){
+				coords[0] = x;
+				coords[1] = z;
+			}
+			else if (Level[x][z].goalCell){
+				coords[2] = x;
+				coords[3] = z;
+			}
+		}
+	}
+	int* coordsPtr = coords;
+	return coordsPtr;
+}
+
+// float** coordinateWalls(int size){
+// 	float[size][size]
+// }
