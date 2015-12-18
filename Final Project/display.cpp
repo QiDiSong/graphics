@@ -41,28 +41,14 @@ void drawXZPlane(float y_intercept, float size){
     glEnd();
 }
 
-void drawAxis()
-{
-	glBegin(GL_LINES);
-	glColor3f(1, 0, 0);
-	glVertex3f(0,0,0);
-	glVertex3f(50,0,0);
-	glColor3f(0,1,0);
-	glVertex3f(0,0,0);
-	glVertex3f(0,50,0);
-	glColor3f(0,0,1);
-	glVertex3f(0,0,0);
-	glVertex3f(0,0,50);
-	glEnd();
-}
-
 void drawWalls(Cell path[][SIZE]){
 	for (int x = 0; x < SIZE; x++){
 		for (int z= 0; z < SIZE; z++){
 			if (path[x][z].display=='*'){
 				glColor3f(1,0,0);
 				glPushMatrix();
-				glTranslatef(x, 0.5, z);
+				glTranslatef(x, 0, z);
+				glScalef(1,0.25,1);
 				glutSolidCube(1);
 				glPopMatrix();
 			}
@@ -118,7 +104,6 @@ void display()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
 
-	drawAxis();
 	drawXZPlane(0, SIZE);
 	drawWalls(maze);
 	
