@@ -80,7 +80,7 @@ GLubyte* LoadPPM(char* file, int* width, int* height, int* MAX)
 	return img;
 }
 
-/*void drawXZPlane(float y_intercept, float size){
+void drawXZPlane(float y_intercept, float size){
 	glColor3f(0.1,0.1,0.1);
 	glLineWidth(1);
 	glBegin(GL_QUADS);
@@ -103,10 +103,10 @@ GLubyte* LoadPPM(char* file, int* width, int* height, int* MAX)
       }
     }
     glEnd();
-}*/
+}
 
 void drawWalls(Cell path[][SIZE]){
-	/*for (int x = 0; x < SIZE; x++){
+	for (int x = 0; x < SIZE; x++){
 		for (int z= 0; z < SIZE; z++){
 			if (!path[x][z].vacant){
 				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -121,9 +121,9 @@ void drawWalls(Cell path[][SIZE]){
 				glPopMatrix();
 			}
 		}
-	}*/
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TEXTURE_MIN_FILTER
-	glutSolidTeapot(1);
+	}
+	/*glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TEXTURE_MIN_FILTER
+	glutSolidTeapot(1);*/
 
 }
 
@@ -175,7 +175,7 @@ void display()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
 
-	//drawXZPlane(0, SIZE);
+	drawXZPlane(0, SIZE);
 	drawWalls(maze);
 	
 	//swap buffers - rendering is done to the back buffer, bring it forward to display
