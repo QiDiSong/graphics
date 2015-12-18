@@ -3,15 +3,20 @@
 #include <stdio.h>
 #include <gl/glut.h>
 #include <gl/gl.h>
+#include <vector>
 #include "mazeGenerator.cpp"
 
 #define SIZE 21
 
+
+//maze stuff
+int mazeScale = 2;
+vector<int*>* walls = new vector<int*>;
 Cell maze[SIZE][SIZE];
-float eye[3] = {SIZE,10,SIZE};
+float eye[3] = {SIZE*mazeScale,10,SIZE*mazeScale};
 
 //lighting
-float light_pos0[] = {SIZE/2,10,SIZE/2,1.0};
+float light_pos0[] = {SIZE/2,30,SIZE/2,1.0};
 float amb0[4] = {0.5,0.5,0.5,1};
 float diff0[4] = {1,1,1, 1};
 float spec0[4] = {1, 1, 1, 1};
@@ -24,8 +29,6 @@ int frame = 0;
 int holdKey = 0;
 bool animate = false;
 
-//maze stuff
-int mazeScale = 2;
 
 /* TEXTURE */
 GLubyte* image;
@@ -151,8 +154,8 @@ void kbd(unsigned char key, int x, int y)
 
 		case 'a':
 		case 'A':
-			//if(pos[0] > -4.4)
-				pos[0] -= 0.1;
+			if(!wallIntersection(walls, pos[0]-0.25, pos[2]))
+				pos[0] -= 0.25;
 			rot[1] = -90;
 			holdKey++;
 			if (animate) frame++;
@@ -160,8 +163,8 @@ void kbd(unsigned char key, int x, int y)
 
 		case 'w':
 		case 'W':
-			//if(pos[2] > -4.4)
-				pos[2] -= 0.1;
+			if(!wallIntersection(walls, pos[0], pos[2]-0.25))
+				pos[2] -= 0.25;
 			rot[1] = 180;
 			holdKey++;
 			if (animate) frame++;
@@ -169,8 +172,8 @@ void kbd(unsigned char key, int x, int y)
 
 		case 'd':
 		case 'D':
-			//if(pos[0] < 4.4)
-				pos[0]+=0.1;
+			if(!wallIntersection(walls, pos[0]+0.25, pos[2]))
+				pos[0]+=0.25;
 			rot[1] = 90;
 			holdKey++;
 			if (animate) frame++;
@@ -178,8 +181,8 @@ void kbd(unsigned char key, int x, int y)
 
 		case 's':
 		case 'S':
-			//if(pos[2] < 4.4)
-				pos[2] += 0.1;
+			if(!wallIntersection(walls, pos[0], pos[2]+0.25))
+				pos[2] += 0.25;
 			rot[1] = 0;
 			holdKey++;
 			if (animate) frame++;
@@ -331,7 +334,7 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(eye[0],eye[1],eye[2],SIZE/2,0,SIZE/2,0,1,0);
+	gluLookAt(eye[0],eye[1],eye[2],SIZE/2*mazeScale,0,SIZE/2*mazeScale,0,1,0);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -408,9 +411,10 @@ int main(int argc, char** argv)
 	Initialize(maze);
 	DrawMaze(maze);
 	int* startEnd = getStartAndGoalCoords(maze);
-	pos[0] = startEnd[0]*mazeScale;
-	pos[2] = startEnd[1]*mazeScale;
+	pos[0] = (float)startEnd[0]*mazeScale;
+	pos[2] = (float)startEnd[1]*mazeScale;
 	drawSnowman(pos, rot, frame);
+	walls = getWalls(maze, mazeScale);
 
 
 	//start the program!

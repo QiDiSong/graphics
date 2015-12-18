@@ -222,7 +222,7 @@ void DrawMaze(Cell Level[][SIZE]) {
 }
 
 int* getStartAndGoalCoords(Cell Level[][SIZE]){
-	int coords[4];
+	int* coords = new int[4];
 
 	for (int x = 0; x < SIZE; x++){
 		for (int z = 0; z < SIZE; z++){
@@ -236,10 +236,29 @@ int* getStartAndGoalCoords(Cell Level[][SIZE]){
 			}
 		}
 	}
-	int* coordsPtr = coords;
-	return coordsPtr;
+	return coords;
 }
 
-// float** coordinateWalls(int size){
-// 	float[size][size]
-// }
+vector<int*>* getWalls(Cell Level[][SIZE], int mazeScale){
+	vector<int*>* walls = new vector<int*>;
+
+	for (int x = 0; x < SIZE; x++){
+		for (int z = 0; z < SIZE; z++){
+			if (!Level[x][z].vacant){
+				int* wall = new int[2];
+				wall[0] = x*mazeScale;
+				wall[1] = z*mazeScale;
+				walls->push_back(wall);
+			}
+		}
+	}
+}
+
+bool wallIntersection(vector<int*>* walls, float x, float z){
+	for (int i = 0; i < walls->size(); i++){
+		float wallX = (float)walls->at(i)[0];
+		float wallZ = (float)walls->at(i)[1];
+		if ((wallX-1.5 < x) && (x < wallX+1.5) && (wallZ-1.5 < z) && (z < wallZ+1.5)) return true; //TODO: make bounds variables!!!
+	}
+	return false;
+}
