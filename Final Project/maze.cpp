@@ -1,4 +1,4 @@
-
+#include <stdlib.h>
 #include <windows.h>
 #include <stdio.h>
 #include <gl/glut.h>
@@ -16,7 +16,71 @@ float amb0[4] = {0.5,0.5,0.5,1};
 float diff0[4] = {1,1,1, 1};
 float spec0[4] = {1, 1, 1, 1};
 
-void drawXZPlane(float y_intercept, float size){
+/* TEXTURE */
+GLubyte* image;
+GLubyte* img_data;
+int width, height, MAX;
+
+GLubyte* LoadPPM(char* file, int* width, int* height, int* MAX)
+{
+	GLubyte* img;
+	FILE *fd;
+	int n, m;
+	int  k, nm;
+	char c;
+	int i;
+	char b[100];
+	float s;
+	int red, green, blue;
+	
+	/* first open file and check if it's an ASCII PPM (indicated by P3 at the start) */
+	fd = fopen(file, "r");
+	fscanf(fd,"%[^\n] ",b);
+	if(b[0]!='P'|| b[1] != '3')
+	{
+		//printf("%s is not a PPM file!\n",file); 
+		exit(0);
+	}
+	//printf("%s is a PPM file\n", file);
+	fscanf(fd, "%c",&c);
+
+	/* next, skip past the comments - any line starting with #*/
+	while(c == '#') 
+	{
+		fscanf(fd, "%[^\n] ", b);
+		//printf("%s\n",b);
+		fscanf(fd, "%c",&c);
+	}
+	ungetc(c,fd); 
+
+	/* now get the dimensions and MAX colour value from the image */
+	fscanf(fd, "%d %d %d", &n, &m, &k);
+
+	//printf("%d rows  %d columns  MAX value= %d\n",n,m,k);
+
+	/* calculate number of pixels and allocate storage for this */
+	nm = n*m;
+	img = (GLubyte*)malloc(3*sizeof(GLuint)*nm);
+	s=255.0/k;
+
+	/* for every pixel, grab the read green and blue values, storing them in the image data array */
+	for(i=0;i<nm;i++) 
+	{
+		fscanf(fd,"%d %d %d",&red, &green, &blue );
+		img[3*nm-3*i-3]=red*s;
+		img[3*nm-3*i-2]=green*s;
+		img[3*nm-3*i-1]=blue*s;
+	}
+
+	/* finally, set the "return parameters" (width, height, MAX) and return the image array */
+	*width = n;
+	*height = m;
+	*MAX = k;
+
+	return img;
+}
+
+/*void drawXZPlane(float y_intercept, float size){
 	glColor3f(0.1,0.1,0.1);
 	glLineWidth(1);
 	glBegin(GL_QUADS);
@@ -39,12 +103,16 @@ void drawXZPlane(float y_intercept, float size){
       }
     }
     glEnd();
-}
+}*/
 
 void drawWalls(Cell path[][SIZE]){
-	for (int x = 0; x < SIZE; x++){
+	/*for (int x = 0; x < SIZE; x++){
 		for (int z= 0; z < SIZE; z++){
 			if (!path[x][z].vacant){
+				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TEXTURE_MIN_FILTER
 				glColor3f(1,0,0);
 				glPushMatrix();
 				glTranslatef(x, 0, z);
@@ -53,7 +121,10 @@ void drawWalls(Cell path[][SIZE]){
 				glPopMatrix();
 			}
 		}
-	}
+	}*/
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TEXTURE_MIN_FILTER
+	glutSolidTeapot(1);
+
 }
 
 void kbd(unsigned char key, int x, int y)
@@ -104,7 +175,7 @@ void display()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
 
-	drawXZPlane(0, SIZE);
+	//drawXZPlane(0, SIZE);
 	drawWalls(maze);
 	
 	//swap buffers - rendering is done to the back buffer, bring it forward to display
@@ -125,7 +196,7 @@ int main(int argc, char** argv)
 	glutInit(&argc, argv);
 	glutInitWindowSize(600, 600);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-	glutCreateWindow("Spinning Cube");
+	glutCreateWindow("Maze Game");
 
 	//enable Z buffer test, otherwise things appear in the order they're drawn
 	glEnable(GL_DEPTH_TEST);
@@ -148,6 +219,11 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(kbd);
 	glutDisplayFunc(display);
 	glutSpecialFunc(special);
+
+	glEnable(GL_TEXTURE_2D);
+	img_data = LoadPPM((char*)"marble.ppm", &width, &height, &MAX);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+	GL_UNSIGNED_BYTE, img_data); 
 
 	//maze stuff
 	int positionX = 0;
