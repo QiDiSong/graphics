@@ -101,7 +101,7 @@ void instructions(){
 		"(by Vicky Bilbily 1317465 and Lucas Bongers 1202472) \n\n"
 		"How to use: \n"
 		"The default scene starts with two lights represented by spheres \n"
-		"Arrow keys - move camera location \n"
+		"arrow keys - move camera location \n"
 		"CTRL + arrow keys - rotate scene \n"
 		"y - insert cube \n"
 		"u - insert sphere \n"
