@@ -199,7 +199,7 @@ void drawWalls(Cell path[][SIZE]){
 				glColor3f(1,0,0);
 				glPushMatrix();
 				glTranslatef(x, 0, z);
-				glScalef(1,1,1);
+				glScalef(1, 1, 1);
 				drawCube();
 				//glutSolidCube(1);
 				glPopMatrix();
