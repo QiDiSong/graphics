@@ -28,6 +28,7 @@ void ClearScreen();
 void Redraw(Cell Level[][SIZE]); //DISPLAY
 void DrawMaze(Cell Level[][SIZE], int &positionX, int &positionY, int &goalX, int & goalY);
 int* getStartAndGoalCoords(Cell Level[][SIZE]);
+int** generateItems(Cell level[][SIZE], int numItems, int scale);
 
 
 // int main() {
@@ -261,4 +262,37 @@ bool wallIntersection(vector<int*>* walls, float x, float z){
 		if ((wallX-1.5 < x) && (x < wallX+1.5) && (wallZ-1.5 < z) && (z < wallZ+1.5)) return true; //TODO: make bounds variables!!!
 	}
 	return false;
+}
+
+//random items in maze
+int** generateItems(Cell level[][SIZE], int numItems, int scale){
+	srand((unsigned)time(NULL));
+	int** locations = new int*[numItems];
+	for (int i = 0; i < numItems; i++){
+		bool foundLocation = false;
+		int* coords = new int[2];
+		while (!foundLocation){
+			coords[0] = rand() % SIZE;
+			coords[1] = rand() % SIZE;
+			if (level[coords[0]][coords[1]].vacant){
+				coords[0] *= scale;
+				coords[1] *= scale;
+				foundLocation = true;
+			}
+		}
+		locations[i] = coords;
+	}
+	return locations;
+}
+
+bool* itemIntersection(int** items, int numItems,bool* pickedUp, float x, float z){
+	for (int i = 0; i < numItems; i++){
+		if (!pickedUp[i]){
+			float itemX = (float)items[i][0];
+			float itemZ = (float)items[i][1];
+			if ((itemX-1 < x) && (x < itemX+1) && (itemZ-1 < z) && (z < itemZ+1)) pickedUp[i]=true;
+			else pickedUp[i]=false;
+		} //TODO: make bounds variables!!!
+	}
+	return pickedUp;
 }

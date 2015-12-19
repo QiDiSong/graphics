@@ -14,6 +14,9 @@ int mazeScale = 2;
 vector<int*>* walls = new vector<int*>;
 Cell maze[SIZE][SIZE];
 float eye[3] = {SIZE*mazeScale,10,SIZE*mazeScale};
+int numItems = 9;
+int** items = new int*[2];
+bool* pickedUp = new bool[numItems];
 
 //lighting
 float light_pos0[] = {SIZE/2,30,SIZE/2,1.0};
@@ -28,7 +31,6 @@ float headRot[] = {0, 0, 0};
 int frame = 0;
 int holdKey = 0;
 bool animate = false;
-
 
 /* TEXTURE */
 GLubyte* image;
@@ -141,6 +143,18 @@ void drawWalls(Cell path[][SIZE]){
 
 }
 
+void drawItems(){
+	for (int i = 0; i < numItems; i++){
+		if(!pickedUp[i]){
+			glColor3f(1,0,0);
+			glPushMatrix();
+			glTranslatef(items[i][0], 0.4, items[i][1]);
+			glutSolidSphere(0.2, 10, 10);
+			glPopMatrix();
+		}
+	}
+}
+
 void kbd(unsigned char key, int x, int y)
 {
 	if (holdKey>1) animate = true;
@@ -159,6 +173,7 @@ void kbd(unsigned char key, int x, int y)
 			rot[1] = -90;
 			holdKey++;
 			if (animate) frame++;
+			pickedUp = itemIntersection(items, numItems, pickedUp, pos[0], pos[2]);
 			break;
 
 		case 'w':
@@ -168,6 +183,7 @@ void kbd(unsigned char key, int x, int y)
 			rot[1] = 180;
 			holdKey++;
 			if (animate) frame++;
+			pickedUp = itemIntersection(items, numItems, pickedUp, pos[0], pos[2]);
 			break;
 
 		case 'd':
@@ -177,6 +193,7 @@ void kbd(unsigned char key, int x, int y)
 			rot[1] = 90;
 			holdKey++;
 			if (animate) frame++;
+			pickedUp = itemIntersection(items, numItems, pickedUp, pos[0], pos[2]);
 			break;
 
 		case 's':
@@ -186,6 +203,7 @@ void kbd(unsigned char key, int x, int y)
 			rot[1] = 0;
 			holdKey++;
 			if (animate) frame++;
+			pickedUp = itemIntersection(items, numItems, pickedUp, pos[0], pos[2]);
 			break;
 
 		case 'y':
@@ -250,7 +268,7 @@ void drawSnowman(float* pos, float* rot, int frame)
 	glPushMatrix();
 
 	glTranslatef(pos[0], pos[1], pos[2]);
-	glRotatef(rot[1], 0, 1, 0);
+	glRotatef(rot[1], 0, 1, 0);	
 
 	//bouncing animation while the character is moving (movement key held down)
 	if (animate)
@@ -350,6 +368,7 @@ void display()
 	drawWalls(maze);
 	glPopMatrix();
 
+	drawItems();
 	drawSnowman(pos, rot, frame);
 	
 	//swap buffers - rendering is done to the back buffer, bring it forward to display
@@ -395,21 +414,14 @@ int main(int argc, char** argv)
 	glutSpecialFunc(special);
 	glutKeyboardUpFunc(keyUp);
 
-
 	glEnable(GL_TEXTURE_2D);
 	img_data = LoadPPM((char*)"marble.ppm", &width, &height, &MAX);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
 	GL_UNSIGNED_BYTE, img_data); 
 
-	//maze stuff
-	int positionX = 0;
-	int positionY = 0;
-	int goalX = 0;
-	int goalY = 0;
-
-
 	Initialize(maze);
 	DrawMaze(maze);
+	items = generateItems(maze,numItems,mazeScale);
 	int* startEnd = getStartAndGoalCoords(maze);
 	pos[0] = (float)startEnd[0]*mazeScale;
 	pos[2] = (float)startEnd[1]*mazeScale;
