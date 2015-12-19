@@ -35,7 +35,11 @@ snowman: snowman.o
 character: character.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
+camera3: camera3.o
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+
 clean:
 	$(RM) *.o maze$(EXEEXT)
 	$(RM) *.o snowman$(EXEEXT)
 	$(RM) *.o character$(EXEEXT)
+	$(RM) *.o camera3$(EXEEXT)
