@@ -226,7 +226,7 @@ void initializeSnow(int x, int y, int z){
 
 void updateSnow(int x, int y, int z){
 	for (int i = 0; i < 30; i++){
-		snows[i][1] -= 0.1;
+		snows[i][1] = snows[i][1] - 0.01;
 		if (snows[i][1] < 0){
 			snows[i][0] = rand() % x;
 			snows[i][1] = y;
