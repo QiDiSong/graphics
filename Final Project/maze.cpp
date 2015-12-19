@@ -96,6 +96,74 @@ GLubyte* LoadPPM(char* file, int* width, int* height, int* MAX)
 	return img;
 }
 
+void drawCube() {
+	glBegin(GL_QUADS);
+	
+	//front
+    glColor3f(1.0f, 0.0f, 0.0f);     // Red
+    glNormal3f(0.0, 0.0, -1.0);
+    glVertex3f( 1.0f/2,  1.0f/2, 1.0f/2);
+    glNormal3f(0.0, 0.0, -1.0);
+    glVertex3f(-1.0f/2,  1.0f/2, 1.0f/2);
+    glNormal3f(0.0, 0.0, -1.0);
+    glVertex3f(-1.0f/2, -1.0f/2, 1.0f/2);
+    glNormal3f(0.0, 0.0, -1.0);
+    glVertex3f( 1.0f/2, -1.0f/2, 1.0f/2);
+    
+	//top
+	glNormal3f(0.0, 1.0, 0.0);
+	glVertex3f( 1.0f/2, 1.0f/2, -1.0f/2);
+	glNormal3f(0.0, 1.0, 0.0);
+    glVertex3f(-1.0f/2, 1.0f/2, -1.0f/2);
+    glNormal3f(0.0, 1.0, 0.0);
+    glVertex3f(-1.0f/2, 1.0f/2,  1.0f/2);
+    glNormal3f(0.0, 1.0, 0.0);
+    glVertex3f( 1.0f/2, 1.0f/2,  1.0f/2);
+
+	//bottom
+	glNormal3f(0.0, -1.0, 0.0);
+	glVertex3f( 1.0f/2, -1.0f/2,  1.0f/2);
+	glNormal3f(0.0, -1.0, 0.0);
+    glVertex3f(-1.0f/2, -1.0f/2,  1.0f/2);
+    glNormal3f(0.0, -1.0, 0.0);
+    glVertex3f(-1.0f/2, -1.0f/2, -1.0f/2);
+    glNormal3f(0.0, -1.0, 0.0);
+    glVertex3f( 1.0f/2, -1.0f/2, -1.0f/2);
+
+	//left side
+	glNormal3f(-1.0, 0.0, 0.0);
+	glVertex3f(-1.0f/2,  1.0f/2,  1.0f/2);
+	glNormal3f(-1.0, 0.0, 0.0);
+    glVertex3f(-1.0f/2,  1.0f/2, -1.0f/2);
+    glNormal3f(-1.0, 0.0, 0.0);
+    glVertex3f(-1.0f/2, -1.0f/2, -1.0f/2);
+    glNormal3f(-1.0, 0.0, 0.0);
+    glVertex3f(-1.0f/2, -1.0f/2,  1.0f/2);
+
+	//right side
+	glNormal3f(1.0, 0.0, 0.0);
+	glVertex3f(1.0f/2,  1.0f/2, -1.0f/2);
+	glNormal3f(1.0, 0.0, 0.0);
+    glVertex3f(1.0f/2,  1.0f/2,  1.0f/2);
+    glNormal3f(1.0, 0.0, 0.0);
+    glVertex3f(1.0f/2, -1.0f/2,  1.0f/2);
+    glNormal3f(1.0, 0.0, 0.0);
+    glVertex3f(1.0f/2, -1.0f/2, -1.0f/2);
+
+	//back side
+	glNormal3f(0.0, 0.0, 1.0);
+	glVertex3f( 1.0f/2, -1.0f/2, -1.0f/2);
+	glNormal3f(0.0, 0.0, 1.0);
+    glVertex3f(-1.0f/2, -1.0f/2, -1.0f/2);
+    glNormal3f(0.0, 0.0, 1.0);
+    glVertex3f(-1.0f/2,  1.0f/2, -1.0f/2);
+    glNormal3f(0.0, 0.0, 1.0);
+    glVertex3f( 1.0f/2,  1.0f/2, -1.0f/2);
+
+	glEnd();
+}
+
+
 void drawXZPlane(float y_intercept, float size){
 	glColor3f(0.1,0.1,0.1);
 	glLineWidth(1);
@@ -125,21 +193,23 @@ void drawWalls(Cell path[][SIZE]){
 	for (int x = 0; x < SIZE; x++){
 		for (int z= 0; z < SIZE; z++){
 			if (!path[x][z].vacant){
-				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TEXTURE_MIN_FILTER
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TEXTURE_MIN_FILTER*/
+				
 				glColor3f(1,0,0);
 				glPushMatrix();
 				glTranslatef(x, 0, z);
-				glScalef(1,0.25,1);
-				glutSolidCube(1);
+				glScalef(1, 1, 1);
+				drawCube();
+				//glutSolidCube(1);
 				glPopMatrix();
 			}
 		}
 	}
-	/*glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TEXTURE_MIN_FILTER
-	glutSolidTeapot(1);*/
+	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TEXTURE_MIN_FILTER
+	//glutSolidTeapot(1);
 
 }
 
@@ -365,6 +435,7 @@ void display()
 	glPushMatrix();
 	glScalef(mazeScale, 1, mazeScale);
 	drawXZPlane(0, SIZE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TEXTURE_MIN_FILTER
 	drawWalls(maze);
 	glPopMatrix();
 
@@ -402,7 +473,7 @@ int main(int argc, char** argv)
 	
 
 	//set clear colour to white
-	glClearColor(1, 1, 1, 0);
+	glClearColor(1, 0, 0, 0);
 
 	glMatrixMode(GL_MODELVIEW);
 	//look down from a 45 deg. angle
