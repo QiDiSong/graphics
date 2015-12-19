@@ -466,8 +466,31 @@ void display()
 	glutPostRedisplay();
 }
 
-void init(){
+void drawText(){
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0, 600, 0, 600);
 
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glDisable(GL_LIGHTING);
+
+	glColor3f(0.0, 1.0, 0.0);
+	glRasterPos2i(10, 10);
+	for (int i = 0; i < transformMode.length(); i++){
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,transformMode[i]);
+	}
+	glFlush();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glLoadIdentity();
+	gluPerspective(45, 1, 1, 100);
+	
 }
 
 int main(int argc, char** argv)
