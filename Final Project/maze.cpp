@@ -102,42 +102,58 @@ void drawCube() {
 	//front
     glColor3f(1.0f, 0.0f, 0.0f);     // Red
     glNormal3f(0.0, 0.0, -1.0);
+    glTexCoord2f(0, 0);
     glVertex3f( 1.0f/2,  1.0f/2, 1.0f/2);
     glNormal3f(0.0, 0.0, -1.0);
+    glTexCoord2f(0, 1);
     glVertex3f(-1.0f/2,  1.0f/2, 1.0f/2);
     glNormal3f(0.0, 0.0, -1.0);
+    glTexCoord2f(1, 0);
     glVertex3f(-1.0f/2, -1.0f/2, 1.0f/2);
     glNormal3f(0.0, 0.0, -1.0);
+    glTexCoord2f(1, 1);
     glVertex3f( 1.0f/2, -1.0f/2, 1.0f/2);
     
 	//top
 	glNormal3f(0.0, 1.0, 0.0);
+	glTexCoord2f(0, 0);
 	glVertex3f( 1.0f/2, 1.0f/2, -1.0f/2);
 	glNormal3f(0.0, 1.0, 0.0);
+	glTexCoord2f(0, 1);
     glVertex3f(-1.0f/2, 1.0f/2, -1.0f/2);
     glNormal3f(0.0, 1.0, 0.0);
+    glTexCoord2f(1, 0);
     glVertex3f(-1.0f/2, 1.0f/2,  1.0f/2);
     glNormal3f(0.0, 1.0, 0.0);
+    glTexCoord2f(1, 1);
     glVertex3f( 1.0f/2, 1.0f/2,  1.0f/2);
 
 	//bottom
 	glNormal3f(0.0, -1.0, 0.0);
+	glTexCoord2f(0, 0);
 	glVertex3f( 1.0f/2, -1.0f/2,  1.0f/2);
 	glNormal3f(0.0, -1.0, 0.0);
+	glTexCoord2f(0, 1);
     glVertex3f(-1.0f/2, -1.0f/2,  1.0f/2);
     glNormal3f(0.0, -1.0, 0.0);
+    glTexCoord2f(1, 0);
     glVertex3f(-1.0f/2, -1.0f/2, -1.0f/2);
     glNormal3f(0.0, -1.0, 0.0);
+    glTexCoord2f(1, 1);
     glVertex3f( 1.0f/2, -1.0f/2, -1.0f/2);
 
 	//left side
 	glNormal3f(-1.0, 0.0, 0.0);
+	glTexCoord2f(0, 0);
 	glVertex3f(-1.0f/2,  1.0f/2,  1.0f/2);
 	glNormal3f(-1.0, 0.0, 0.0);
+	glTexCoord2f(0, 1);
     glVertex3f(-1.0f/2,  1.0f/2, -1.0f/2);
     glNormal3f(-1.0, 0.0, 0.0);
+    glTexCoord2f(1, 0);
     glVertex3f(-1.0f/2, -1.0f/2, -1.0f/2);
     glNormal3f(-1.0, 0.0, 0.0);
+    glTexCoord2f(1, 1);
     glVertex3f(-1.0f/2, -1.0f/2,  1.0f/2);
 
 	//right side
