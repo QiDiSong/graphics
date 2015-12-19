@@ -239,7 +239,7 @@ void kbd(unsigned char key, int x, int y)
 		case 'a':
 		case 'A':
 			if(!wallIntersection(walls, pos[0]-0.25, pos[2]))
-				pos[0] -= 0.25;
+				{pos[0] -= 0.25; eye[0] -= 0.25;}
 			rot[1] = -90;
 			holdKey++;
 			if (animate) frame++;
@@ -249,7 +249,7 @@ void kbd(unsigned char key, int x, int y)
 		case 'w':
 		case 'W':
 			if(!wallIntersection(walls, pos[0], pos[2]-0.25))
-				pos[2] -= 0.25;
+				{pos[2] -= 0.25; eye[2] -=0.25;}
 			rot[1] = 180;
 			holdKey++;
 			if (animate) frame++;
@@ -259,7 +259,7 @@ void kbd(unsigned char key, int x, int y)
 		case 'd':
 		case 'D':
 			if(!wallIntersection(walls, pos[0]+0.25, pos[2]))
-				pos[0]+=0.25;
+				{pos[0]+=0.25; eye[0] += 0.25;}
 			rot[1] = 90;
 			holdKey++;
 			if (animate) frame++;
@@ -269,7 +269,7 @@ void kbd(unsigned char key, int x, int y)
 		case 's':
 		case 'S':
 			if(!wallIntersection(walls, pos[0], pos[2]+0.25))
-				pos[2] += 0.25;
+				{pos[2] += 0.25; eye[2] += 0.25;}
 			rot[1] = 0;
 			holdKey++;
 			if (animate) frame++;
@@ -339,6 +339,7 @@ void drawSnowman(float* pos, float* rot, int frame)
 
 	glTranslatef(pos[0], pos[1], pos[2]);
 	glRotatef(rot[1], 0, 1, 0);	
+	//gluLookAt(-5,10,10,0,0,0,0,1,0);
 
 	//bouncing animation while the character is moving (movement key held down)
 	if (animate)
@@ -422,7 +423,7 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(eye[0],eye[1],eye[2],SIZE/2*mazeScale,0,SIZE/2*mazeScale,0,1,0);
+	gluLookAt(eye[0],eye[1],eye[2],pos[0],pos[1],pos[2],0,1,0);
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -496,6 +497,9 @@ int main(int argc, char** argv)
 	int* startEnd = getStartAndGoalCoords(maze);
 	pos[0] = (float)startEnd[0]*mazeScale;
 	pos[2] = (float)startEnd[1]*mazeScale;
+	eye[0] = pos[0] - 5;
+	eye[1] = 5;
+	eye[2] = pos[2] - 5;
 	drawSnowman(pos, rot, frame);
 	walls = getWalls(maze, mazeScale);
 
