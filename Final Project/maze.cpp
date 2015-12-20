@@ -33,6 +33,9 @@ int frame = 0;
 int holdKey = 0;
 bool animate = false;
 
+//screens
+//GLubyte*
+
 /* TEXTURE */
 GLubyte* image;
 GLubyte* img_data;
