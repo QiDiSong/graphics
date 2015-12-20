@@ -233,6 +233,7 @@ void updateSnow(int x, int y, int z){
 			snows[i][2] = rand() % z;
 		}
 	}
+	bool cold = false;
 }
 
 void drawSnow(){

@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <gl/glut.h>
 #include <gl/gl.h>
+#include <string>
 #include <vector>
 #include "mazeGenerator.cpp"
 
 #define SIZE 21
-
 
 //maze stuff
 int mazeScale = 2;
@@ -17,9 +17,10 @@ float eye[3] = {SIZE*mazeScale,10,SIZE*mazeScale};
 int numItems = 9;
 int** items = new int*[2];
 bool* pickedUp = new bool[numItems];
+bool win = false;
 
 //lighting
-float light_pos0[] = {SIZE/2,30,SIZE/2,1.0};
+float light_pos0[] = {SIZE,30,SIZE,1.0};
 float amb0[4] = {0.5,0.5,0.5,1};
 float diff0[4] = {1,1,1, 1};
 float spec0[4] = {1, 1, 1, 1};
@@ -349,10 +350,78 @@ void special(int key, int x, int y){
 	}
 }
 
-void drawSnowman(float* pos, float* rot, int frame)
-{
-	glPushMatrix();
+void drawPenguin(float* pos, float* rot, int frame){
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
 
+	glPushMatrix();
+	glTranslatef(pos[0], pos[1], pos[2]);
+	glRotatef(rot[1], 0, 1, 0);	
+
+	if (animate)
+	{	if ((frame)%8==7||(frame)%8==5){
+			//glTranslatef(0,0.025,0);
+			glRotatef(2,0,0,1);
+		}
+		if ((frame)%8==6){
+			//glTranslatef(0,0.025,0);
+			glRotatef(3,0,0,1);
+		}
+		if ((frame)%8==3||(frame)%8==1){
+			//glTranslatef(0,-0.025,0);
+			glRotatef(-2,0,0,1);
+		}
+		if ((frame)%8==2){
+			//glTranslatef(0,-0.025,0);
+			glRotatef(-2,0,0,1);
+		}
+	}
+	glColor3f(0,0,1);
+	glPushMatrix();
+	glRotatef(90,1,0,0);
+	glTranslatef(0,0,-1);
+	GLUquadric* qobj = gluNewQuadric();
+	gluCylinder(qobj, 0.75, 0.75, 1.5, 20, 20);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0, 1, 0);
+	glutSolidSphere(0.75,20,20);
+
+	//translate and draw right eye
+	glPushMatrix();
+	glColor3f(0,0,0);
+	glTranslatef(0.25, 0.2, 0.6);
+	glColor3f(0,0,0);
+	glutSolidSphere(0.1, 10, 10);
+	glPopMatrix();
+
+	//translate and draw left eye
+	glPushMatrix();
+	glTranslatef(-0.25, 0.2, 0.6);
+	glColor3f(0,0,0);
+	glutSolidSphere(0.1, 10, 10);
+	glPopMatrix();
+
+	//translate and draw nose
+	glPushMatrix();
+	glTranslatef(0, 0.1, 0.7);
+	glColor3f(1,0.4,0);
+	glutSolidCone(0.1, 0.2, 10, 10);
+	glPopMatrix();
+
+	glPopMatrix();//head
+	glPopMatrix();//body
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+
+}
+
+void drawSnowman(float* pos, float* rot, int frame)
+{	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
 	glTranslatef(pos[0], pos[1], pos[2]);
 	glRotatef(rot[1], 0, 1, 0);	
 	//gluLookAt(-5,10,10,0,0,0,0,1,0);
@@ -403,13 +472,14 @@ void drawSnowman(float* pos, float* rot, int frame)
 
 	glPushMatrix();
 	//translate relative to body, and draw head
+	glColor3f(1,1,1);
 	glTranslatef(0, 1.25, 0);
 	glRotatef(headRot[1], 0, 1, 0); //turn the head relative to the body
-	glColor3f(1,1,1);
 	glutSolidSphere(0.5, 16, 16);
 	
 	//translate and draw right eye
 	glPushMatrix();
+	glColor3f(0,0,0);
 	glTranslatef(0.2, 0.15, 0.45);
 	glColor3f(0,0,0);
 	glutSolidSphere(0.1, 10, 10);
@@ -430,7 +500,43 @@ void drawSnowman(float* pos, float* rot, int frame)
 	glPopMatrix();
 
 	glPopMatrix();//body
+
 	glPopMatrix();//snowman
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+}
+
+void drawText(char* text, void* font, int x, int y, float r, float g, float b){
+	glColor3f(r,g,b);
+	glRasterPos2i(x, y);
+		for (int i = 0; i < strlen(text); i++){
+			glutBitmapCharacter(font, text[i]);
+		}
+	glFlush();
+}
+
+void draw2D(){
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0, 600, 0, 600);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glDisable(GL_LIGHTING);
+
+	 drawText("YOU WON!!!!",GLUT_BITMAP_TIMES_ROMAN_24, 200,200,1,0,0);
+
+	drawText("hello",GLUT_BITMAP_HELVETICA_18, 50, 50, 1,0,0);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glLoadIdentity();
+	gluPerspective(45, 1, 1, 100);
+	
 }
 
 void display()
@@ -458,6 +564,8 @@ void display()
 
 	drawItems();
 	drawSnowman(pos, rot, frame);
+	//drawPenguin(pos, rot, frame);
+	draw2D();
 	
 	//swap buffers - rendering is done to the back buffer, bring it forward to display
 	glutSwapBuffers();
@@ -466,31 +574,11 @@ void display()
 	glutPostRedisplay();
 }
 
-void drawText(){
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(0, 600, 0, 600);
-
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-	glDisable(GL_LIGHTING);
-
-	glColor3f(0.0, 1.0, 0.0);
-	glRasterPos2i(10, 10);
-	for (int i = 0; i < transformMode.length(); i++){
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15,transformMode[i]);
+void idle(){
+	win = checkWin(pickedUp, numItems);
+	if (win){
+		printf("you won! \n");
 	}
-	glFlush();
-
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glLoadIdentity();
-	gluPerspective(45, 1, 1, 100);
-	
 }
 
 int main(int argc, char** argv)
@@ -498,7 +586,7 @@ int main(int argc, char** argv)
 	//glut initialization stuff:
 	// set the window size, display mode, and create the window
 	glutInit(&argc, argv);
-	glutInitWindowSize(600, 600);
+	glutInitWindowSize(800, 800);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("Maze Game");
 
@@ -510,10 +598,9 @@ int main(int argc, char** argv)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45,1,1,100);
-	
 
 	//set clear colour to white
-	glClearColor(1, 0, 0, 0);
+	glClearColor(0, 0, 0, 0);
 
 	glMatrixMode(GL_MODELVIEW);
 	//look down from a 45 deg. angle
@@ -524,6 +611,7 @@ int main(int argc, char** argv)
 	glutDisplayFunc(display);
 	glutSpecialFunc(special);
 	glutKeyboardUpFunc(keyUp);
+	glutIdleFunc(idle);
 
 	glEnable(GL_TEXTURE_2D);
 	img_data = LoadPPM((char*)"marble.ppm", &width, &height, &MAX);
@@ -533,20 +621,20 @@ int main(int argc, char** argv)
 	Initialize(maze);
 	DrawMaze(maze);
 	items = generateItems(maze,numItems,mazeScale);
+	for (int i=0; i <numItems;i++){
+		pickedUp[i] = false;
+	}
 	int* startEnd = getStartAndGoalCoords(maze);
 	pos[0] = (float)startEnd[0]*mazeScale;
 	pos[2] = (float)startEnd[1]*mazeScale;
-	eye[0] = pos[0] - 5;
-	eye[1] = 5;
-	eye[2] = pos[2] - 5;
+	eye[0] = pos[0];
+	eye[1] = 8;
+	eye[2] = pos[2] + 10;
 	drawSnowman(pos, rot, frame);
 	walls = getWalls(maze, mazeScale);
 
-
 	//start the program!
 	glutMainLoop();
-
-	
 
 	return 0;
 }
