@@ -23,4 +23,4 @@ A random terrain generator that uses the "circles" algorithm.
 A basic 3D modeller that utilizes a scene-graph and ray-picking.  
 **Learned about:** scene graphs, matrix transformation stack, mouse rays, the slab method.  
 **Features:** adding primitive objects, deleting objects, scene reset, translation, rotation, scaling, changeable materials, adjustable lighting.  
-<img src="https://i.gyazo.com/bd2a45334a511ca48ff115a871f51288.png" width="500" height="500">
+<img src="https://i.gyazo.com/10f3b02c4c2a2784fca8f5ce91d1c354.png" width="500" height="500">
