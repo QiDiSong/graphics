@@ -8,7 +8,7 @@
 //VICKY BILBILY
 //1317465
 
-int T = 1000; //speed variable (milliseconds)
+int T = 1200; //speed variable (milliseconds)
 bool play = true; //player clicked play (spacebar)
 bool timerCalled = false; //the timer was called to loop the animation
 enum Pattern { CELL, BLOCK, BLINKER, GLIDER };
@@ -142,12 +142,12 @@ void keyboard(unsigned char key, int x, int y){
 //Special key handler, to be passed into glutSpecialFunc.
 void special(int key, int x, int y){
 	switch(key){
-		case GLUT_KEY_UP: //increase speed until 1 redisplay per 100ms
-			T -= T > 100 ? 100 : 0;
+		case GLUT_KEY_UP: //increase speed by a factor of 2 (max speed is 1 redisplay per 25ms)
+			T = T > 25 ? T/2 : T;
 			break;
 
-		case GLUT_KEY_DOWN: //decrease speed until 1 redisplay per 2000ms
-			T += T < 2000 ? 100 : 0;
+		case GLUT_KEY_DOWN: //decrease speed speed by a factor of 2 (min speed is 1 redisplay per 2400ms)
+			T = T < 2400 ? T*2 : T;
 			break;
 
 		default:
@@ -247,8 +247,8 @@ void instructions(){
 	printf("\n by Vicky Bilbily :)");
 	printf("\n\n INSTRUCTIONS:");
 	printf("\n Spacebar: toggles play/pause.");
-	printf("\n Up key: increases animation frequency by 100ms up to one redisplay per 100ms.");
-	printf("\n Down key: decreases animation frequency by ms up to one redisplay per 2000ms.");
+	printf("\n Up key: increases speed by a factor of 2.");
+	printf("\n Down key: decreases speed by a factor of 2.");
 	printf("\n 'c' key: clears all cells from the grid.");
 	printf("\n 'r' key: randomizes grid.");
 	printf("\n Left click: edit the grid according to the current mode.");

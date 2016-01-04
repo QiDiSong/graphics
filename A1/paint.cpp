@@ -2,6 +2,7 @@
 #include <gl/glut.h>
 #include <gl/gl.h>
 #include <stdio.h>
+#include <algorithm>
 #include <time.h>
 #include "mathLib.cpp"
 

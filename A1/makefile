@@ -24,22 +24,14 @@ else
 	endif
 endif
 
-all: maze
+all: conway paint
 
-maze: maze.o
+conway: conway.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-snowman: snowman.o
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
-
-character: character.o
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
-
-camera3: camera3.o
+paint: paint.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 clean:
-	$(RM) *.o maze$(EXEEXT)
-	$(RM) *.o snowman$(EXEEXT)
-	$(RM) *.o character$(EXEEXT)
-	$(RM) *.o camera3$(EXEEXT)
+	$(RM) *.o conway$(EXEEXT)
+	$(RM) *.o paint$(EXEEXT)
