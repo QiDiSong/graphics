@@ -1,5 +1,5 @@
 # graphics
-Assignments for SFWR ENG 3GC3 (Computer Graphics), created using OpenGL, GLUT, and C++.
+Assignments for a computer graphics course created using OpenGL, GLUT, and C++.
 
 ### A1: Paint and Conway's Game of Life
 A paint program that uses bresenham's line drawing algorithm to draw lines and shapes.  
